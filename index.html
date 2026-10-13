@@ -159,7 +159,7 @@ footer.f .btn{margin-top:8px}
 .pg.poster .xg .m,.pg.hand .xg .m{color:#b8bec2;font-size:1.25em;line-height:1.5}
 .pg.poster .xg .m .mn,.pg.hand .xg .m .mn{font-weight:400}
 .pg.rec .xg .m{align-items:flex-start;justify-content:flex-start;text-align:left;font-size:.95em;color:#333;padding:.3em .4em}
-.pg.result .xg .rz{font-size:1.25em}.pg .xg .rz.w b{color:#17694d;font-size:1.5em}.pg .xg .rz.lo b{color:#555;font-size:1.5em}.pg .xg .rz .sc{font-size:.9em;font-weight:700}.pg .xg .rz.pend{color:#b8bec2;font-size:.9em}
+.pg.result .xg .rz{font-size:1.25em}.pg .xg .rz.w b{color:#17694d;font-size:1.5em}.pg .xg .rz.lo b{color:#555;font-size:1.5em}.pg .xg .rz .ps{display:block;white-space:nowrap;font-size:.8em;font-weight:400;color:#333;line-height:1.35}.pg .xg .rz .ps i{font-style:normal;display:block}.pg .xg .rz .sc{font-size:.9em;font-weight:700}.pg .xg .rz.pend{color:#b8bec2;font-size:.9em}
 .pg .xg .rk{font-size:1.5em;font-weight:900}.pg .xg .adv{background:#cfe8da}.pg .xg .wc{background:#fde1c8}.xg .hd.adv{background:#b9ddc9}.xg .hd.wc{background:#fbd0a8}
 .mh .rv{margin-left:auto;font-weight:700}.mt .wm{color:#17694d}
 .pg-f{font-size:.72em;color:#444;margin:.5em 0 0;line-height:1.4}
@@ -495,7 +495,7 @@ function prtPage(o){
       var m=ms.find(function(x){return (x.t[0]===a&&x.t[1]===c)||(x.t[0]===c&&x.t[1]===a)});
       if(rs&&m){
         var r=res(m);
-        if(r.done){var mine=m.t[0]===a?r.w1:r.w2,opp=m.t[0]===a?r.w2:r.w1,win=mine>opp;h+='<div class="c rz '+(win?'w':'lo')+'"><div><b>'+(win?'○':'●')+'</b>'+(lb?'':'<br><span class="sc">'+mine+' - '+opp+'</span>')+'</div></div>';return}
+        if(r.done){var mine=m.t[0]===a?r.w1:r.w2,opp=m.t[0]===a?r.w2:r.w1,win=mine>opp;var fl=m.t[0]===a?0:1,ps=(m.sets||[]).map(function(v,i){var q=(m.rem||[])[i];return '<i>'+(q&&q[0]!=null&&q[1]!=null?q[fl]+'-'+q[1-fl]:'－')+'</i>'}).join('');h+='<div class="c rz '+(win?'w':'lo')+'"><div><b>'+(win?'○':'●')+'</b><span class="ps">'+ps+'</span>'+(lb?'':'<span class="sc">'+mine+' - '+opp+'</span>')+'</div></div>';return}
         h+='<div class="c rz pend"><div>'+(status(m)==='live'?'<b>試合中</b>':'第'+(m.ord+1)+'試合<br><small>'+fm(m.s)+'</small>')+'</div></div>';return;
       }
       h+='<div class="c m"><div>'+(m?'<span class="mn">第'+(m.ord+1)+'試合</span>'+(rec?'':'<br><small>'+fm(m.s)+'</small>'):'')+'</div></div>';
@@ -506,7 +506,7 @@ function prtPage(o){
     }
     st.forEach(function(){h+='<div class="c"></div>'});
   });
-  h+='</div></div></div><p class="pg-f">'+(lb?'1セットマッチの総当たり。勝ち1点、負け0点。上位2チームが決勝トーナメントへ進みます。':'3セットマッチ。2-0で勝つと2点、2-1で勝つと1点、負けは0点。1位・2位が決勝トーナメントへ、3位は敗者復活戦へ進みます。')+'順位は、勝点、残存（残り内野人数の合計）、削減、直接対決、じゃんけんの順に決めます。'+(rs?(lb?'緑：決勝トーナメント進出。':'緑：決勝トーナメント進出、橙：敗者復活戦へ。')+(o.done&&o.tie?'同じ成績のチームがいます。順位は運営が決めて発表します。':''):'')+'</p></section>';
+  h+='</div></div></div><p class="pg-f">'+(lb?'1セットマッチの総当たり。勝ち1点、負け0点。上位2チームが決勝トーナメントへ進みます。':'3セットマッチ。2-0で勝つと2点、2-1で勝つと1点、負けは0点。1位・2位が決勝トーナメントへ、3位は敗者復活戦へ進みます。')+'順位は、勝点、残存（残り内野人数の合計）、削減、直接対決、じゃんけんの順に決めます。'+(rs?'マス内の小さい数字は各セット終了時の残り内野人数（そのチーム－相手）。'+(lb?'緑：決勝トーナメント進出。':'緑：決勝トーナメント進出、橙：敗者復活戦へ。')+(o.done&&o.tie?'同じ成績のチームがいます。順位は運営が決めて発表します。':''):'')+'</p></section>';
   return h;
 }
 function printHtml(mode){
