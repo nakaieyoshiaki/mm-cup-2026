@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#2f6b4f"><title>MM CUP2026 進行表</title><link id="mm-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]{display:none!important}</style><style id="mm-style">
+/* Layout concept: a gym scoreboard for phones. Court-green header, white match cards, one orange "live" signal, bottom tab bar. */
+:root{
+  --bg:#f2f5f3; --surface:#ffffff; --ink:#15211d; --muted:#586a62; --line:#d3dcd8;
+  --court:#17694d; --court-ink:#ffffff; --soft:#e3efe9; --ball:#c2410c; --ball-soft:#fde9dd; --warn:#8a5a00;
+  --font-ui:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+  --font-num:"Barlow Condensed","Arial Narrow","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1714; --surface:#17211d; --ink:#e8f0ec; --muted:#9bada5; --line:#2b3a34;
+  --court:#4cc59a; --court-ink:#07130e; --soft:#1c2d26; --ball:#ff9a5c; --ball-soft:#3a2417; --warn:#e8b64c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1714; --surface:#17211d; --ink:#e8f0ec; --muted:#9bada5; --line:#2b3a34;
+  --court:#4cc59a; --court-ink:#07130e; --soft:#1c2d26; --ball:#ff9a5c; --ball-soft:#3a2417; --warn:#e8b64c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--ball);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:16px 120px}
+.top{background:var(--court);color:var(--court-ink)}
+.top-in{max-width:760px;margin:0 auto;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;overflow:hidden}
+.brand{font-weight:900;font-size:22px;letter-spacing:.02em;line-height:1.1}
+.brand small{display:block;font-weight:500;font-size:12px;opacity:.85;letter-spacing:.04em}
+.upd{font-size:12px;text-align:right;opacity:.9;line-height:1.35}
+.court-mark{position:absolute;right:-26px;top:-30px;width:120px;height:120px;border:3px solid currentColor;border-radius:50%;opacity:.16;pointer-events:none}
+.court-mark::after{content:"";position:absolute;left:50%;top:-40px;bottom:-40px;border-left:3px solid currentColor}
+h2{font-size:18px;line-height:1.3;margin:0 0 10px;font-weight:900}
+h3{font-size:15px;margin:0 0 6px;font-weight:700}
+.sec{margin-block:0 22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.num{font-family:var(--font-num);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:99px;border:1px solid var(--line);background:var(--soft);white-space:nowrap}
+.chip.live{background:var(--ball);border-color:var(--ball);color:#fff}
+.chip.done{background:transparent;color:var(--muted)}
+.chip.wait{border-color:var(--warn);color:var(--warn);background:transparent}
+.chip.warm{background:transparent;color:var(--muted);font-weight:500}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+.nav-in{display:flex;width:100%;max-width:760px}
+.nav button{flex:1;border:0;background:none;padding:12px 4px 10px;font-weight:700;font-size:13px;color:var(--muted);border-top:3px solid transparent;min-width:0}
+.nav button[aria-current="page"]{color:var(--court);border-top-color:var(--court)}
+.pubbar{position:fixed;left:12px;right:12px;bottom:calc(58px + env(safe-area-inset-bottom,0px));max-width:736px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:21;font-weight:700}
+.btn{border:1px solid var(--court);background:var(--court);color:var(--court-ink);border-radius:8px;padding:8px 14px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--court)}
+.btn.warn{background:transparent;border-color:var(--ball);color:var(--ball)}
+.btn.sm{padding:3px 10px;font-size:13px}
+.btn[disabled]{opacity:.5;cursor:default}
+.pubbar .btn{background:var(--ball);border-color:var(--ball);color:#fff}
+.seg{display:flex;gap:6px;margin-bottom:12px}
+.seg button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 6px;font-weight:700;min-width:0}
+.seg button[aria-pressed="true"]{background:var(--court);border-color:var(--court);color:var(--court-ink)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 4px}
+.filters button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:3px 12px;font-weight:700;font-size:13px}
+.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+/* match card */
+.mc{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mc.live{border-color:var(--ball);box-shadow:0 0 0 2px var(--ball-soft)}
+.mc-h{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;padding:6px 10px;background:var(--soft);font-size:12px;font-weight:700}
+.mc-h .sp{flex:1}
+.mc .row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-top:1px solid var(--line)}
+.mc .row .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
+.mc .row.win .nm{font-weight:900}
+.mc .row.lose{color:var(--muted)}
+.mc .row.me{background:var(--ball-soft)}
+.mc .row.tbd .nm{color:var(--muted);font-weight:500;font-size:13px}
+.mc .sc{font-family:var(--font-num);font-size:24px;font-weight:700;line-height:1;min-width:1.2em;text-align:right}
+.mc .code{font-size:11px;color:var(--muted);margin-left:6px}
+.mc .adm{padding:6px 10px;border-top:1px dashed var(--line);text-align:right}
+.list{display:grid;gap:10px}
+.slot-h{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;flex-wrap:wrap}
+.slot-h .t{font-family:var(--font-num);font-size:28px;font-weight:700;line-height:1}
+.slot-h .r{font-size:13px;color:var(--muted);font-weight:700}
+.sess{margin:24px 0 0;font-size:16px;font-weight:900;border-bottom:2px solid var(--court);padding-bottom:4px}
+.hero{border:2px solid var(--court);border-radius:12px;background:var(--surface);padding:14px}
+.bar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin:8px 0 4px}
+.bar>i{display:block;height:100%;background:var(--court)}
+.big{font-family:var(--font-num);font-weight:700;font-size:44px;line-height:1}
+.next{border:2px solid var(--ball);border-radius:12px;background:var(--surface);padding:14px}
+.next .vs{font-size:20px;font-weight:900;margin:6px 0 2px;overflow-wrap:anywhere}
+.kv{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+select,input[type=text],input[type=number],input[type=date],input[type=time]{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;min-width:0;max-width:100%}
+select{width:100%}
+ul.info{margin:0;padding-left:1.2em;display:grid;gap:6px}
+/* tables */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:6px 6px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:700}
+td.l,th.l{text-align:left;white-space:normal;min-width:7em}
+tr.adv td:first-child{box-shadow:inset 4px 0 0 var(--court)}
+tr.wc td:first-child{box-shadow:inset 4px 0 0 var(--ball)}
+tr.me td{background:var(--ball-soft)}
+td.pts{font-family:var(--font-num);font-size:20px;font-weight:700}
+.cross td,.cross th{padding:6px 2px;font-size:13px}
+.cross td.d{background:var(--soft)}
+.cross td.w{font-weight:900;color:var(--court)}
+.cross td.lo{color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin:8px 0 14px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+/* bracket */
+.brs{overflow-x:auto;padding-bottom:6px}
+.br{display:grid;column-gap:14px;row-gap:10px}
+.br.c4{grid-template-columns:repeat(4,minmax(176px,1fr));min-width:760px}
+.br.c3{grid-template-columns:repeat(3,minmax(176px,1fr));min-width:570px}
+.br .bh{font-weight:900;font-size:13px;color:var(--muted);border-bottom:2px solid var(--line);padding-bottom:3px}
+.br .cell{display:flex;align-items:center}
+.br .cell .mc{flex:1;min-width:0}
+.champ{background:var(--court);color:var(--court-ink);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px}
+.champ b{display:block;font-size:26px;font-weight:900;line-height:1.3}
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:14px 14px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
+.setrow{margin:10px 0}
+.setrow .lab{font-size:13px;font-weight:700;margin-bottom:4px}
+.setrow .seg{margin:0}
+.setrow .seg button{font-size:14px;padding:10px 4px;overflow-wrap:anywhere}
+.fld{display:grid;grid-template-columns:8em 1fr;gap:8px;align-items:center;margin:8px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(120px + env(safe-area-inset-bottom,0px));max-width:728px;margin:0 auto;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;z-index:50;font-weight:700}
+.note{border-left:4px solid var(--warn);padding:6px 10px;background:var(--surface);font-size:13px;border-radius:0 8px 8px 0}
+footer.f{margin-top:26px;text-align:center;font-size:12px;color:var(--muted)}
+footer.f .btn{margin-top:8px}
+@media (max-width:420px){.big{font-size:38px}.fld{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.chip.live{animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.72}}}
+</style></head><body>
+<div id="app"></div>
+<noscript>このページはJavaScriptが必要です。</noscript>
+<script id="mm-data" type="application/json">{"updated":"","days":[{"label":"1日目","title":"予選リーグ・敗者復活戦","date":"2026-12-05","venue":"新庄小学校・新庄中学校"},{"label":"2日目","title":"決勝トーナメント・フレンドリーマッチ","date":"2026-12-06","venue":"東陽中学校"}],"lb":{"AM":{"from":["A","B","C"]},"PM":{"from":["D","E","F"]}},"streams":[{"id":"A","day":1,"name":"新庄小学校 1面","cur":-1,"delay":0},{"id":"B","day":1,"name":"新庄中学校 1面","cur":-1,"delay":0},{"id":"C","day":1,"name":"新庄中学校 2面","cur":-1,"delay":0},{"id":"D","day":1,"name":"新庄小学校 1面","cur":-1,"delay":0},{"id":"E","day":1,"name":"新庄中学校 1面","cur":-1,"delay":0},{"id":"F","day":1,"name":"新庄中学校 2面","cur":-1,"delay":0},{"id":"LBAM","day":1,"name":"新庄中学校","cur":-1,"delay":0},{"id":"LBPM","day":1,"name":"新庄中学校","cur":-1,"delay":0},{"id":"CA","day":2,"name":"コートA","cur":-1,"delay":0},{"id":"CB","day":2,"name":"コートB","cur":-1,"delay":0}],"teams":[{"id":"A1","name":"A1","block":"A"},{"id":"A2","name":"A2","block":"A"},{"id":"A3","name":"A3","block":"A"},{"id":"A4","name":"A4","block":"A"},{"id":"B1","name":"B1","block":"B"},{"id":"B2","name":"B2","block":"B"},{"id":"B3","name":"B3","block":"B"},{"id":"B4","name":"B4","block":"B"},{"id":"C1","name":"C1","block":"C"},{"id":"C2","name":"C2","block":"C"},{"id":"C3","name":"C3","block":"C"},{"id":"C4","name":"C4","block":"C"},{"id":"D1","name":"D1","block":"D"},{"id":"D2","name":"D2","block":"D"},{"id":"D3","name":"D3","block":"D"},{"id":"D4","name":"D4","block":"D"},{"id":"E1","name":"E1","block":"E"},{"id":"E2","name":"E2","block":"E"},{"id":"E3","name":"E3","block":"E"},{"id":"E4","name":"E4","block":"E"},{"id":"F1","name":"F1","block":"F"},{"id":"F2","name":"F2","block":"F"},{"id":"F3","name":"F3","block":"F"},{"id":"F4","name":"F4","block":"F"}],"matches":[{"id":"A-1","day":1,"stream":"A","ord":0,"s":540,"e":570,"stage":"league","block":"A","tag":"Aリーグ 第1試合","bo":3,"warm":true,"t":["A1","A4"],"sets":[]},{"id":"A-2","day":1,"stream":"A","ord":1,"s":570,"e":600,"stage":"league","block":"A","tag":"Aリーグ 第2試合","bo":3,"warm":true,"t":["A2","A3"],"sets":[]},{"id":"A-3","day":1,"stream":"A","ord":2,"s":600,"e":620,"stage":"league","block":"A","tag":"Aリーグ 第3試合","bo":3,"warm":false,"t":["A1","A3"],"sets":[]},{"id":"A-4","day":1,"stream":"A","ord":3,"s":620,"e":640,"stage":"league","block":"A","tag":"Aリーグ 第4試合","bo":3,"warm":false,"t":["A4","A2"],"sets":[]},{"id":"A-5","day":1,"stream":"A","ord":4,"s":640,"e":660,"stage":"league","block":"A","tag":"Aリーグ 第5試合","bo":3,"warm":false,"t":["A1","A2"],"sets":[]},{"id":"A-6","day":1,"stream":"A","ord":5,"s":660,"e":680,"stage":"league","block":"A","tag":"Aリーグ 第6試合","bo":3,"warm":false,"t":["A3","A4"],"sets":[]},{"id":"B-1","day":1,"stream":"B","ord":0,"s":540,"e":570,"stage":"league","block":"B","tag":"Bリーグ 第1試合","bo":3,"warm":true,"t":["B1","B4"],"sets":[]},{"id":"B-2","day":1,"stream":"B","ord":1,"s":570,"e":600,"stage":"league","block":"B","tag":"Bリーグ 第2試合","bo":3,"warm":true,"t":["B2","B3"],"sets":[]},{"id":"B-3","day":1,"stream":"B","ord":2,"s":600,"e":620,"stage":"league","block":"B","tag":"Bリーグ 第3試合","bo":3,"warm":false,"t":["B1","B3"],"sets":[]},{"id":"B-4","day":1,"stream":"B","ord":3,"s":620,"e":640,"stage":"league","block":"B","tag":"Bリーグ 第4試合","bo":3,"warm":false,"t":["B4","B2"],"sets":[]},{"id":"B-5","day":1,"stream":"B","ord":4,"s":640,"e":660,"stage":"league","block":"B","tag":"Bリーグ 第5試合","bo":3,"warm":false,"t":["B1","B2"],"sets":[]},{"id":"B-6","day":1,"stream":"B","ord":5,"s":660,"e":680,"stage":"league","block":"B","tag":"Bリーグ 第6試合","bo":3,"warm":false,"t":["B3","B4"],"sets":[]},{"id":"C-1","day":1,"stream":"C","ord":0,"s":540,"e":570,"stage":"league","block":"C","tag":"Cリーグ 第1試合","bo":3,"warm":true,"t":["C1","C4"],"sets":[]},{"id":"C-2","day":1,"stream":"C","ord":1,"s":570,"e":600,"stage":"league","block":"C","tag":"Cリーグ 第2試合","bo":3,"warm":true,"t":["C2","C3"],"sets":[]},{"id":"C-3","day":1,"stream":"C","ord":2,"s":600,"e":620,"stage":"league","block":"C","tag":"Cリーグ 第3試合","bo":3,"warm":false,"t":["C1","C3"],"sets":[]},{"id":"C-4","day":1,"stream":"C","ord":3,"s":620,"e":640,"stage":"league","block":"C","tag":"Cリーグ 第4試合","bo":3,"warm":false,"t":["C4","C2"],"sets":[]},{"id":"C-5","day":1,"stream":"C","ord":4,"s":640,"e":660,"stage":"league","block":"C","tag":"Cリーグ 第5試合","bo":3,"warm":false,"t":["C1","C2"],"sets":[]},{"id":"C-6","day":1,"stream":"C","ord":5,"s":660,"e":680,"stage":"league","block":"C","tag":"Cリーグ 第6試合","bo":3,"warm":false,"t":["C3","C4"],"sets":[]},{"id":"D-1","day":1,"stream":"D","ord":0,"s":810,"e":840,"stage":"league","block":"D","tag":"Dリーグ 第1試合","bo":3,"warm":true,"t":["D1","D4"],"sets":[]},{"id":"D-2","day":1,"stream":"D","ord":1,"s":840,"e":870,"stage":"league","block":"D","tag":"Dリーグ 第2試合","bo":3,"warm":true,"t":["D2","D3"],"sets":[]},{"id":"D-3","day":1,"stream":"D","ord":2,"s":870,"e":890,"stage":"league","block":"D","tag":"Dリーグ 第3試合","bo":3,"warm":false,"t":["D1","D3"],"sets":[]},{"id":"D-4","day":1,"stream":"D","ord":3,"s":890,"e":910,"stage":"league","block":"D","tag":"Dリーグ 第4試合","bo":3,"warm":false,"t":["D4","D2"],"sets":[]},{"id":"D-5","day":1,"stream":"D","ord":4,"s":910,"e":930,"stage":"league","block":"D","tag":"Dリーグ 第5試合","bo":3,"warm":false,"t":["D1","D2"],"sets":[]},{"id":"D-6","day":1,"stream":"D","ord":5,"s":930,"e":950,"stage":"league","block":"D","tag":"Dリーグ 第6試合","bo":3,"warm":false,"t":["D3","D4"],"sets":[]},{"id":"E-1","day":1,"stream":"E","ord":0,"s":810,"e":840,"stage":"league","block":"E","tag":"Eリーグ 第1試合","bo":3,"warm":true,"t":["E1","E4"],"sets":[]},{"id":"E-2","day":1,"stream":"E","ord":1,"s":840,"e":870,"stage":"league","block":"E","tag":"Eリーグ 第2試合","bo":3,"warm":true,"t":["E2","E3"],"sets":[]},{"id":"E-3","day":1,"stream":"E","ord":2,"s":870,"e":890,"stage":"league","block":"E","tag":"Eリーグ 第3試合","bo":3,"warm":false,"t":["E1","E3"],"sets":[]},{"id":"E-4","day":1,"stream":"E","ord":3,"s":890,"e":910,"stage":"league","block":"E","tag":"Eリーグ 第4試合","bo":3,"warm":false,"t":["E4","E2"],"sets":[]},{"id":"E-5","day":1,"stream":"E","ord":4,"s":910,"e":930,"stage":"league","block":"E","tag":"Eリーグ 第5試合","bo":3,"warm":false,"t":["E1","E2"],"sets":[]},{"id":"E-6","day":1,"stream":"E","ord":5,"s":930,"e":950,"stage":"league","block":"E","tag":"Eリーグ 第6試合","bo":3,"warm":false,"t":["E3","E4"],"sets":[]},{"id":"F-1","day":1,"stream":"F","ord":0,"s":810,"e":840,"stage":"league","block":"F","tag":"Fリーグ 第1試合","bo":3,"warm":true,"t":["F1","F4"],"sets":[]},{"id":"F-2","day":1,"stream":"F","ord":1,"s":840,"e":870,"stage":"league","block":"F","tag":"Fリーグ 第2試合","bo":3,"warm":true,"t":["F2","F3"],"sets":[]},{"id":"F-3","day":1,"stream":"F","ord":2,"s":870,"e":890,"stage":"league","block":"F","tag":"Fリーグ 第3試合","bo":3,"warm":false,"t":["F1","F3"],"sets":[]},{"id":"F-4","day":1,"stream":"F","ord":3,"s":890,"e":910,"stage":"league","block":"F","tag":"Fリーグ 第4試合","bo":3,"warm":false,"t":["F4","F2"],"sets":[]},{"id":"F-5","day":1,"stream":"F","ord":4,"s":910,"e":930,"stage":"league","block":"F","tag":"Fリーグ 第5試合","bo":3,"warm":false,"t":["F1","F2"],"sets":[]},{"id":"F-6","day":1,"stream":"F","ord":5,"s":930,"e":950,"stage":"league","block":"F","tag":"Fリーグ 第6試合","bo":3,"warm":false,"t":["F3","F4"],"sets":[]},{"id":"LBA1","day":1,"stream":"LBAM","ord":0,"s":710,"e":717,"stage":"lb","grp":"AM","tag":"敗者復活（午前） 第1試合","bo":1,"warm":false,"t":["R:A:3","R:B:3"],"sets":[]},{"id":"LBA2","day":1,"stream":"LBAM","ord":1,"s":717,"e":724,"stage":"lb","grp":"AM","tag":"敗者復活（午前） 第2試合","bo":1,"warm":false,"t":["R:A:3","R:C:3"],"sets":[]},{"id":"LBA3","day":1,"stream":"LBAM","ord":2,"s":724,"e":731,"stage":"lb","grp":"AM","tag":"敗者復活（午前） 第3試合","bo":1,"warm":false,"t":["R:B:3","R:C:3"],"sets":[]},{"id":"LBP1","day":1,"stream":"LBPM","ord":0,"s":980,"e":987,"stage":"lb","grp":"PM","tag":"敗者復活（午後） 第1試合","bo":1,"warm":false,"t":["R:D:3","R:E:3"],"sets":[]},{"id":"LBP2","day":1,"stream":"LBPM","ord":1,"s":987,"e":994,"stage":"lb","grp":"PM","tag":"敗者復活（午後） 第2試合","bo":1,"warm":false,"t":["R:D:3","R:F:3"],"sets":[]},{"id":"LBP3","day":1,"stream":"LBPM","ord":2,"s":994,"e":1001,"stage":"lb","grp":"PM","tag":"敗者復活（午後） 第3試合","bo":1,"warm":false,"t":["R:E:3","R:F:3"],"sets":[]},{"id":"M1","day":2,"stream":"CA","ord":0,"s":600,"e":630,"stage":"ko","tag":"1回戦 M1","bo":3,"warm":true,"t":["R:A:1","LB:AM:1"],"sets":[]},{"id":"M2","day":2,"stream":"CA","ord":1,"s":630,"e":660,"stage":"ko","tag":"1回戦 M2","bo":3,"warm":true,"t":["R:B:1","LB:AM:2"],"sets":[]},{"id":"M3","day":2,"stream":"CA","ord":2,"s":660,"e":690,"stage":"ko","tag":"1回戦 M3","bo":3,"warm":true,"t":["R:C:1","R:D:2"],"sets":[]},{"id":"M4","day":2,"stream":"CA","ord":3,"s":690,"e":720,"stage":"ko","tag":"1回戦 M4","bo":3,"warm":true,"t":["R:E:2","R:F:2"],"sets":[]},{"id":"FM1","day":2,"stream":"CA","ord":4,"s":720,"e":740,"stage":"fm","tag":"フレンドリー 1回戦 FM1","bo":3,"warm":false,"t":["L:M1","L:M2"],"sets":[]},{"id":"QF1","day":2,"stream":"CA","ord":5,"s":740,"e":760,"stage":"ko","tag":"準々決勝 QF1","bo":3,"warm":false,"t":["W:M1","W:M2"],"sets":[]},{"id":"FM2","day":2,"stream":"CA","ord":6,"s":760,"e":780,"stage":"fm","tag":"フレンドリー 1回戦 FM2","bo":3,"warm":false,"t":["L:M3","L:M4"],"sets":[]},{"id":"QF2","day":2,"stream":"CA","ord":7,"s":780,"e":800,"stage":"ko","tag":"準々決勝 QF2","bo":3,"warm":false,"t":["W:M3","W:M4"],"sets":[]},{"id":"FSF1","day":2,"stream":"CA","ord":8,"s":800,"e":820,"stage":"fm","tag":"フレンドリー 準決勝 FSF1","bo":3,"warm":false,"t":["W:FM1","W:FM2"],"sets":[]},{"id":"FF","day":2,"stream":"CA","ord":9,"s":830,"e":850,"stage":"fm","tag":"フレンドリー 決勝 FF","bo":3,"warm":false,"t":["W:FSF1","W:FSF2"],"sets":[]},{"id":"SF1","day":2,"stream":"CA","ord":10,"s":850,"e":870,"stage":"ko","tag":"準決勝① SF1","bo":3,"warm":false,"t":["W:QF1","W:QF2"],"sets":[]},{"id":"TP","day":2,"stream":"CA","ord":11,"s":880,"e":900,"stage":"ko","tag":"3位決定戦","bo":3,"warm":false,"t":["L:SF1","L:SF2"],"sets":[]},{"id":"F","day":2,"stream":"CA","ord":12,"s":910,"e":930,"stage":"ko","tag":"決勝","bo":3,"warm":false,"t":["W:SF1","W:SF2"],"sets":[]},{"id":"M5","day":2,"stream":"CB","ord":0,"s":600,"e":630,"stage":"ko","tag":"1回戦 M5","bo":3,"warm":true,"t":["R:D:1","LB:PM:1"],"sets":[]},{"id":"M6","day":2,"stream":"CB","ord":1,"s":630,"e":660,"stage":"ko","tag":"1回戦 M6","bo":3,"warm":true,"t":["R:E:1","LB:PM:2"],"sets":[]},{"id":"M7","day":2,"stream":"CB","ord":2,"s":660,"e":690,"stage":"ko","tag":"1回戦 M7","bo":3,"warm":true,"t":["R:F:1","R:A:2"],"sets":[]},{"id":"M8","day":2,"stream":"CB","ord":3,"s":690,"e":720,"stage":"ko","tag":"1回戦 M8","bo":3,"warm":true,"t":["R:B:2","R:C:2"],"sets":[]},{"id":"FM3","day":2,"stream":"CB","ord":4,"s":720,"e":740,"stage":"fm","tag":"フレンドリー 1回戦 FM3","bo":3,"warm":false,"t":["L:M5","L:M6"],"sets":[]},{"id":"QF3","day":2,"stream":"CB","ord":5,"s":740,"e":760,"stage":"ko","tag":"準々決勝 QF3","bo":3,"warm":false,"t":["W:M5","W:M6"],"sets":[]},{"id":"FM4","day":2,"stream":"CB","ord":6,"s":760,"e":780,"stage":"fm","tag":"フレンドリー 1回戦 FM4","bo":3,"warm":false,"t":["L:M7","L:M8"],"sets":[]},{"id":"QF4","day":2,"stream":"CB","ord":7,"s":780,"e":800,"stage":"ko","tag":"準々決勝 QF4","bo":3,"warm":false,"t":["W:M7","W:M8"],"sets":[]},{"id":"FSF2","day":2,"stream":"CB","ord":8,"s":800,"e":820,"stage":"fm","tag":"フレンドリー 準決勝 FSF2","bo":3,"warm":false,"t":["W:FM3","W:FM4"],"sets":[]},{"id":"SF2","day":2,"stream":"CB","ord":9,"s":850,"e":870,"stage":"ko","tag":"準決勝② SF2","bo":3,"warm":false,"t":["W:QF3","W:QF4"],"sets":[]}],"ko":{"over":{},"refs":["R:A:1","LB:AM:1","R:B:1","LB:AM:2","R:C:1","R:D:2","R:E:2","R:F:2","R:D:1","LB:PM:1","R:E:1","LB:PM:2","R:F:1","R:A:2","R:B:2","R:C:2","R:A:3","R:B:3","R:C:3","R:D:3","R:E:3","R:F:3"]}}</script>
+<script src="config.js"></script>
+<script id="mm-app">
+(function(){
+'use strict';
+var S=JSON.parse(document.getElementById('mm-data').textContent);
+var app=document.getElementById('app');
+var FONT='<link id="mm-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap">';
+var DOW=['日','月','火','水','木','金','土'], BL=['A','B','C','D','E','F'];
+var T={},M={},ST={};
+S.teams.forEach(function(t){T[t.id]=t});
+S.matches.forEach(function(m){M[m.id]=m});
+S.streams.forEach(function(s){ST[s.id]=s});
+function sget(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function sset(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+function lget(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lset(k,v){try{if(v)localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}}
+function jst(){try{return new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Tokyo'})}catch(e){return ''}}
+function dayDone(d){return S.matches.filter(function(m){return m.day===d}).every(function(m){return res(m).done})}
+function activeDay(){var n=jst();if(n&&n===S.days[1].date)return 2;if(n&&n===S.days[0].date)return 1;return dayDone(1)?2:1}
+var ui={canEdit:false,tab:'home',day:0,admin:false,edit:null,draft:null,draftRem:[[null,null],[null,null],[null,null]],dirty:0,busy:false,onlyMe:false,filter:'all',kt:'ko',my:lget('mm_my')||'',toast:'',pin:lget('mm_pin')||'',pinTry:'',pinAsk:false,net:null};
+try{var r0=JSON.parse(sget('mm_ui')||'null');if(r0){ui.tab=r0.tab||'home';ui.day=r0.day||0;ui.admin=!!r0.admin;ui.kt=r0.kt||'ko'}}catch(e){}
+if(String((window.MM_CONFIG||{}).dbUrl||'')&&!ui.pin){ui.admin=false;if(ui.tab==='admin')ui.tab='home'}
+if(!ui.day)ui.day=1;
+if(!S.teams.some(function(t){return t.id===ui.my}))ui.my='';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pad(n){return (n<10?'0':'')+n}
+function fm(t){return pad(Math.floor(t/60)%24)+':'+pad(t%60)}
+/* ---------- model ---------- */
+function tn(id){return id&&T[id]?T[id].name:''}
+function need(m){return m.bo===1?1:2}
+function res(m){var a=0,b=0;(m.sets||[]).forEach(function(v){if(v===1)a++;else if(v===2)b++});var n=need(m),done=a>=n||b>=n;return {w1:a,w2:b,done:done,win:done?(a>b?1:2):0}}
+function ref(r){
+  if(T[r])return r;
+  if(S.ko.over[r])return S.ko.over[r];
+  var p=r.split(':');
+  if(p[0]==='R'){if(!blockDone(p[1]))return null;return standings(p[1])[+p[2]-1].id}
+  if(p[0]==='LB'){var L=lbRows(p[1]);if(!L||!L.done)return null;return L.list[+p[2]-1].id}
+  var m=M[p[1]],x=res(m);if(!x.done)return null;
+  var ts=teamsOf(m);return p[0]==='W'?ts[x.win-1]:ts[2-x.win];
+}
+function teamsOf(m){return m.t.map(ref)}
+function refLabel(r){
+  if(T[r])return T[r].name;
+  var p=r.split(':');
+  if(p[0]==='R')return p[1]+'リーグ'+p[2]+'位';
+  if(p[0]==='LB')return '敗者復活（'+(p[1]==='AM'?'午前':'午後')+'）'+p[2]+'位';
+  return p[1]+'の'+(p[0]==='W'?'勝者':'敗者');
+}
+function sname(s){return s.id.length===1?s.id+'リーグ（'+s.name+'）':(s.id.indexOf('LB')===0?'敗者復活戦（'+(s.id==='LBAM'?'午前':'午後')+'）':s.name)}
+function shiftNote(d){
+  var late=S.streams.filter(function(s){return s.day===d&&s.delay>0}),early=S.streams.filter(function(s){return s.day===d&&s.delay<0}),h='';
+  if(late.length)h+='<p class="note" style="margin:8px 0 0">進行が予定より遅れています: '+late.map(function(s){return esc(sname(s))+'（約'+s.delay+'分）'}).join('、')+'。表示の時刻は、修正後の目安です。</p>';
+  if(early.length)h+='<p class="note" style="margin:8px 0 0">進行が予定より早まっています: '+early.map(function(s){return esc(sname(s))+'（約'+(-s.delay)+'分）'}).join('、')+'。表示の時刻は、修正後の目安です。試合に遅れないよう、早めの集合をお願いします。</p>';
+  return h;
+}
+function mdelay(m){var s=ST[m.stream];return (s.delay&&m.ord>=Math.max(s.cur,0))?(+s.delay):0}
+function mstart(m){return fm(m.s+mdelay(m))}
+function mrange(m){var d=mdelay(m);return fm(m.s+d)+'–'+fm(m.e+d)}
+function status(m){if(res(m).done)return 'done';var c=ST[m.stream].cur;if(c===m.ord)return 'live';if(c>m.ord)return 'wait';return 'plan'}
+function nstream(id){return S.matches.filter(function(m){return m.stream===id}).length}
+function fmtDate(s){if(!s)return '';var d=new Date(s+'T00:00:00');if(isNaN(d))return '';return (d.getMonth()+1)+'月'+d.getDate()+'日('+DOW[d.getDay()]+')'}
+function pairMatch(a,b,st){return S.matches.find(function(m){if(m.stage!==st)return false;var t=teamsOf(m);return (t[0]===a&&t[1]===b)||(t[0]===b&&t[1]===a)})}
+function h2h(a,b,st){var m=pairMatch(a,b,st);if(!m)return 0;var r=res(m);if(!r.done)return 0;return teamsOf(m)[r.win-1]===a?-1:1}
+function remAdd(m,a,c){var rm=m.rem||[];(m.sets||[]).forEach(function(v,i){var q=rm[i];if(!q||q[0]==null||q[1]==null)return;a.rs+=q[0];a.cs+=8-q[1];c.rs+=q[1];c.cs+=8-q[0]})}
+function cmpRows(x,y,st){return y.pts-x.pts||y.rs-x.rs||y.cs-x.cs||h2h(x.id,y.id,st)}
+function hasTie(rows,st){for(var i=0;i<rows.length-1;i++)if(cmpRows(rows[i],rows[i+1],st)===0)return true;return false}
+function remMissing(ms){return ms.some(function(m){return res(m).done&&(m.sets||[]).some(function(v,i){var q=(m.rem||[])[i];return !(q&&q[0]!=null&&q[1]!=null)})})}
+function standings(b){
+  var R={},rows=S.teams.filter(function(t){return t.block===b}).map(function(t){var o={id:t.id,p:0,w:0,l:0,pts:0,rs:0,cs:0};R[t.id]=o;return o});
+  S.matches.forEach(function(m){
+    if(m.stage!=='league'||m.block!==b)return;var r=res(m);if(!r.done)return;
+    var a=R[m.t[0]],c=R[m.t[1]];a.p++;c.p++;remAdd(m,a,c);
+    if(r.win===1){a.w++;c.l++;a.pts+=(r.w2===0?2:1)}else{c.w++;a.l++;c.pts+=(r.w1===0?2:1)}
+  });
+  rows.sort(function(x,y){return cmpRows(x,y,'league')||(x.id<y.id?-1:1)});
+  return rows;
+}
+function blockDone(b){return S.matches.filter(function(m){return m.stage==='league'&&m.block===b}).every(function(m){return res(m).done})}
+function leagueDone(){return BL.every(blockDone)}
+function lbMatches(g){return S.matches.filter(function(m){return m.stage==='lb'&&m.grp===g})}
+function lbRows(g){
+  var L=S.lb[g],ids=L.from.map(function(b){return ref('R:'+b+':3')});
+  if(ids.some(function(x){return !x}))return null;
+  var R={},rows=ids.map(function(id){var o={id:id,p:0,w:0,l:0,pts:0,rs:0,cs:0};R[id]=o;return o});
+  var ms=lbMatches(g);
+  ms.forEach(function(m){var r=res(m);if(!r.done)return;var t=teamsOf(m);if(!R[t[0]]||!R[t[1]])return;var a=R[t[0]],c=R[t[1]];a.p++;c.p++;remAdd(m,a,c);if(r.win===1){a.w++;c.l++;a.pts++}else{c.w++;a.l++;c.pts++}});
+  rows.sort(function(x,y){return cmpRows(x,y,'lb')||(x.id<y.id?-1:1)});
+  var done=ms.every(function(m){return res(m).done});
+  return {list:rows,done:done,tie:done&&hasTie(rows,'lb'),ms:ms};
+}
+function lbDone(){return lbMatches('AM').every(function(m){return res(m).done})&&lbMatches('PM').every(function(m){return res(m).done})}
+function champion(){var f=M.F,r=res(f);if(!r.done)return null;return teamsOf(f)[r.win-1]}
+function myMatches(id){return S.matches.filter(function(m){return teamsOf(m).indexOf(id)>=0}).sort(function(a,b){return a.day-b.day||a.s-b.s})}
+/* ---------- views ---------- */
+function nameHtml(id,fb){
+  if(!id)return '<span class="nm">'+esc(fb||'未定')+'</span>';
+  var t=T[id];return '<span class="nm">'+esc(t.name)+(t.name!==t.id?'<span class="code">'+esc(t.id)+'</span>':'')+'</span>';
+}
+function matchCard(m){
+  var ts=teamsOf(m),r=res(m),st=status(m),lab={done:'終了',live:'試合中',wait:'結果待ち',plan:'予定'}[st];
+  var h='<article class="mc'+(st==='live'?' live':'')+'" id="m-'+m.id+'"><div class="mc-h"><span>'+esc(m.tag)+'</span><span class="num">'+mrange(m)+'</span><span>'+esc(ST[m.stream].name)+'</span>'+(m.warm?'<span class="chip warm">アップ5分込み</span>':'')+'<span class="sp"></span><span class="chip '+(st==='plan'?'':st)+'">'+lab+'</span></div>';
+  for(var i=0;i<2;i++){
+    var id=ts[i],cl='row';
+    if(r.done)cl+=(r.win===i+1?' win':' lose');
+    if(id&&id===ui.my)cl+=' me';
+    if(!id)cl+=' tbd';
+    var sc=(m.sets||[]).length?(i===0?r.w1:r.w2):'';
+    h+='<div class="'+cl+'">'+nameHtml(id,refLabel(m.t[i]))+'<span class="sc">'+sc+'</span></div>';
+  }
+  if(ui.admin&&ts[0]&&ts[1])h+='<div class="adm"><button class="btn sm" data-act="edit" data-id="'+m.id+'">結果を入力</button></div>';
+  return h+'</article>';
+}
+function cards(ms){return '<div class="list">'+ms.map(matchCard).join('')+'</div>'}
+function heroHtml(){
+  var d=activeDay(),day=S.days[d-1],ms=S.matches.filter(function(m){return m.day===d});
+  var done=ms.filter(function(m){return res(m).done}).length;
+  var h='<section class="sec hero"><div class="kv"><h2 style="margin:0">'+esc(day.label)+' '+esc(day.title)+'</h2><span class="muted small">'+fmtDate(day.date)+' '+esc(day.venue)+'</span></div>';
+  if(d===2&&champion())h+='<div class="champ" style="margin:10px 0 0"><span class="small">優勝</span><b>'+esc(tn(champion()))+'</b></div>';
+  h+='<div class="bar"><i style="width:'+Math.round(done/ms.length*100)+'%"></i></div><div class="small muted">'+ms.length+'試合中 '+done+'試合が終了</div>';
+  h+=shiftNote(d);
+  var live=ms.filter(function(m){return status(m)==='live'}).sort(function(a,b){return a.s-b.s});
+  var nx=[];
+  S.streams.filter(function(s){return s.day===d}).forEach(function(s){
+    var from=s.cur<0?0:s.cur+1;
+    var m=S.matches.filter(function(m){return m.stream===s.id&&m.ord>=from&&!res(m).done}).sort(function(a,b){return a.ord-b.ord})[0];
+    if(m&&m.ord>=from)nx.push(m);
+  });
+  nx=nx.filter(function(m){return status(m)!=='live'}).sort(function(a,b){return a.s+mdelay(a)-b.s-mdelay(b)});
+  if(nx.length){var t0=nx[0].s+mdelay(nx[0]);nx=nx.filter(function(m){return m.s+mdelay(m)<=t0+60}).slice(0,6)}
+  if(live.length)h+='<h3 style="margin-top:12px"><span class="chip live">いま</span></h3>'+cards(live);
+  if(nx.length)h+='<h3 style="margin-top:14px"><span class="chip">'+(live.length?'次':'最初の試合')+'</span></h3>'+cards(nx);
+  if(!live.length&&!nx.length)h+='<p class="small muted" style="margin:10px 0 0">この日の試合はすべて終了しました。</p>';
+  else if(!live.length&&S.streams.filter(function(s){return s.day===d}).every(function(s){return s.cur<0}))h+='<p class="small muted" style="margin:10px 0 0">まだ開始前です。運営が進行を開始すると「いま」の試合が表示されます。</p>';
+  return h+'</section>';
+}
+function myTeamHtml(){
+  var opts='<option value="">チームを選ぶ</option>';
+  BL.forEach(function(b){opts+='<optgroup label="'+b+'リーグ">'+S.teams.filter(function(t){return t.block===b}).map(function(t){return '<option value="'+t.id+'"'+(t.id===ui.my?' selected':'')+'>'+esc(t.name)+'</option>'}).join('')+'</optgroup>'});
+  var h='<section class="sec"><h2>自チームの予定</h2><div class="card"><label class="small muted" for="mysel">選んだチームは、この端末に記憶されます</label><select id="mysel" data-chg="my">'+opts+'</select></div>';
+  if(!ui.my)return h+'</section>';
+  var id=ui.my,ms=myMatches(id),nx=ms.find(function(m){return !res(m).done});
+  if(nx){
+    var st=status(nx),ts=teamsOf(nx),oi=ts[0]===id?1:0,gap=nx.ord-Math.max(ST[nx.stream].cur,0);
+    var when=st==='live'?'いま試合中です':st==='wait'?'結果待ち（まもなく呼ばれます）':(gap<=0?'次に呼ばれます':'同じコートで、あと'+gap+'試合');
+    h+='<div class="next" style="margin-top:10px"><div class="kv"><span class="chip live">次の試合</span><span class="muted small">'+esc(nx.tag)+'</span></div>'
+      +'<div class="kv" style="margin-top:6px"><span class="big">'+mstart(nx)+'</span><span style="font-size:20px;font-weight:900">'+esc(ST[nx.stream].name)+'</span></div>'
+      +'<div class="vs">対 '+esc(ts[oi]?tn(ts[oi]):refLabel(nx.t[oi]))+'</div><div class="small" style="font-weight:700">'+when+(nx.warm?'（開始前にアップ5分）':'')+'</div></div>';
+  }else{
+    var msg;
+    if(!leagueDone())msg='予選リーグの全試合が終わると、決勝トーナメントへの進出が決まります。';
+    else if(!lbDone())msg='敗者復活戦の結果を待っています。';
+    else if(!ms.some(function(m){return m.stage==='ko'||m.stage==='fm'}))msg='決勝トーナメントへの進出はありません。ご参加ありがとうございました。';
+    else msg='次の対戦相手が決まるまでお待ちください。';
+    h+='<div class="card" style="margin-top:10px"><b>'+(ms.length&&ms.every(function(m){return res(m).done})?'いまの予定はすべて終了':'次の試合は未定')+'</b><div class="small muted">'+msg+'</div></div>';
+  }
+  h+='<div class="card" style="margin-top:10px"><h3>'+esc(tn(id))+' の試合</h3>'+cards(ms)+'</div>';
+  var b=T[id].block,pos=standings(b).findIndex(function(r){return r.id===id})+1;
+  h+='<p class="small muted" style="margin:8px 0 0">'+b+'リーグの現在順位: '+pos+'位'+(blockDone(b)?'（確定）':'（暫定）')+'</p>';
+  return h+'</section>';
+}
+function infoHtml(){
+  return '<section class="sec"><h2>大会情報</h2><div class="card"><ul class="info small">'
+   +'<li><b>予選</b> 12月5日(土) 午前9:00〜 A・B・Cリーグ、午後13:30〜 D・E・Fリーグ（午前と午後の入れ替えは12:30〜13:00）。会場は新庄小学校（A・D）と新庄中学校（B・C・E・F・敗者復活戦）。</li>'
+   +'<li><b>決勝</b> 12月6日(日) 10:00〜 東陽中学校。</li>'
+   +'<li>予選終了後、新庄中学校でお菓子まきを行います。帰らずに、アナウンスに従って体育館に集まってください。</li>'
+   +'<li>新庄小学校の試合のチームは、徒歩や乗り合わせでの移動をお願いすることがあります。運営の指示に従ってください。</li>'
+   +'<li>駐車場は指定の場所のみです。路上や新庄中学校正門前の私有地には絶対に停めないでください。1日目の新庄中学校の校門内駐車場は、許可証をお持ちの車のみで、午前8:30・午後13:00から開放します。</li>'
+   +'<li>円陣や声出しは、セット間（1分）と入れ替わり（2分）の中で行います。試合後のベンチ前での円陣やミーティングは禁止です。</li>'
+   +'<li>メンバー登録票は、できるだけ説明会 兼 組み合わせ抽選会（11月22日(日) 19:00 新庄小学校体育館）で提出してください。間に合わないときは予選当日に各コート本部へ。</li>'
+   +'</ul></div></section>';
+}
+function homeHtml(){return heroHtml()+myTeamHtml()+infoHtml()}
+function filterOk(m,f){
+  if(f==='all')return true;
+  if(f==='LB')return m.stage==='lb';
+  if(f==='ko'||f==='fm')return m.stage===f;
+  if(f==='CA'||f==='CB')return m.stream===f;
+  return m.block===f;
+}
+function scheduleHtml(){
+  var d=ui.day,day=S.days[d-1];
+  var h='<div class="seg">'+S.days.map(function(x,i){return '<button data-act="day" data-d="'+(i+1)+'" aria-pressed="'+(ui.day===i+1)+'">'+esc(x.label)+' '+(i?'決勝':'予選')+'</button>'}).join('')+'</div>';
+  h+='<p class="muted small" style="margin:0 0 8px">'+fmtDate(day.date)+' ・ '+esc(day.venue)+'</p>'+shiftNote(d);
+  var fl=d===1?[['all','すべて'],['A','A'],['B','B'],['C','C'],['D','D'],['E','E'],['F','F'],['LB','敗者復活']]:[['all','すべて'],['ko','決勝トーナメント'],['fm','フレンドリー'],['CA','コートA'],['CB','コートB']];
+  h+='<div class="filters">'+fl.map(function(f){return '<button data-act="filter" data-f="'+f[0]+'" aria-pressed="'+(ui.filter===f[0])+'">'+f[1]+(f[0].length===1?'リーグ':'')+'</button>'}).join('')+'</div>';
+  if(ui.my)h+='<div style="margin-top:6px"><button class="btn ghost sm" data-act="onlyme">'+(ui.onlyMe?'全試合を表示':'自チームの試合だけ表示')+'</button></div>';
+  var ms=S.matches.filter(function(m){return m.day===d&&filterOk(m,ui.filter)});
+  if(ui.onlyMe&&ui.my)ms=ms.filter(function(m){return teamsOf(m).indexOf(ui.my)>=0});
+  var times=[];ms.forEach(function(m){if(times.indexOf(m.s)<0)times.push(m.s)});times.sort(function(a,b){return a-b});
+  var sess='';
+  times.forEach(function(s){
+    var g=ms.filter(function(m){return m.s===s}).sort(function(a,b){return S.streams.indexOf(ST[a.stream])-S.streams.indexOf(ST[b.stream])});
+    if(d===1){var sn=s<750?'午前の部（A・B・Cリーグ・敗者復活戦）':'午後の部（D・E・Fリーグ・敗者復活戦）';if(sn!==sess){sess=sn;h+='<div class="sess">'+sn+'</div>'}}
+    h+='<div class="slot-h"><span class="t">'+fm(s)+'</span></div>'+cards(g);
+  });
+  if(!times.length)h+='<p class="muted small">該当する試合はありません。</p>';
+  return h;
+}
+function leagueHtml(){
+  var h='<p class="small muted" style="margin:0 0 6px">勝ち点は 2-0勝ち=2点、2-1勝ち=1点、負け=0点です。順位は、勝ち点、残存、削減、直接対決の順で決め、それでも決まらないときはじゃんけんです。</p><p class="small muted" style="margin:0 0 6px">残存＝各セット終了時の自チームの残り内野人数の合計。削減＝各セット終了時の「8人−相手の残り内野人数」の合計。</p><div class="legend"><span><i style="background:var(--court)"></i>決勝トーナメント進出（各リーグ上位2チーム）</span><span><i style="background:var(--ball)"></i>3位は敗者復活戦へ</span></div>';
+  BL.forEach(function(b){
+    var st=standings(b),teams=S.teams.filter(function(t){return t.block===b}),done=blockDone(b);
+    h+='<section class="sec"><div class="kv"><h2 style="margin:0 0 8px">'+b+'リーグ</h2><span class="chip'+(done?'':' wait')+'">'+(done?'確定':'暫定')+'</span><span class="small muted">'+esc(ST[b].name)+'</span></div><div class="card" style="padding:6px 8px"><div class="tw"><table><thead><tr><th>順位</th><th class="l">チーム</th><th>試合</th><th>勝</th><th>負</th><th>勝点</th><th>残存</th><th>削減</th></tr></thead><tbody>';
+    st.forEach(function(r,i){
+      var cl=(i<2?'adv':(i===2?'wc':''))+(r.id===ui.my?' me':'');
+      h+='<tr class="'+cl+'"><td class="num">'+(i+1)+'</td><td class="l">'+esc(tn(r.id))+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.l+'</td><td class="pts">'+r.pts+'</td><td class="num">'+r.rs+'</td><td class="num">'+r.cs+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>'+(done&&hasTie(st,'league')?'<p class="note" style="margin:8px 0 0">同じ成績のチームがいます。順位は運営が決めて発表します。</p>':'')+(ui.admin&&remMissing(S.matches.filter(function(m){return m.stage==='league'&&m.block===b}))?'<p class="note" style="margin:8px 0 0">残り内野人数が未入力の試合があります。同点のときの順位に使うため、結果入力で入れてください。</p>':'')+'<div class="card" style="padding:6px 8px;margin-top:8px"><div class="small muted" style="padding:2px 4px">対戦表（行のチームから見た、取得セット数）</div><div class="tw"><table class="cross"><thead><tr><th></th>'+teams.map(function(t){return '<th>'+esc(t.id)+'</th>'}).join('')+'</tr></thead><tbody>';
+    teams.forEach(function(a){
+      h+='<tr><th>'+esc(a.id)+'</th>';
+      teams.forEach(function(c){
+        if(a.id===c.id){h+='<td class="d"></td>';return}
+        var m=pairMatch(a.id,c.id,'league'),r=res(m);
+        if(!r.done){h+='<td class="muted">'+(status(m)==='live'?'<span class="chip live">中</span>':'–')+'</td>';return}
+        var mine=m.t[0]===a.id?r.w1:r.w2,opp=m.t[0]===a.id?r.w2:r.w1,win=mine>opp;
+        h+='<td class="'+(win?'w':'lo')+'">'+(win?'○':'●')+' '+mine+'-'+opp+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div></div></section>';
+  });
+  ['AM','PM'].forEach(function(g){
+    var L=S.lb[g],rows=lbRows(g),ms=lbMatches(g);
+    h+='<section class="sec"><div class="kv"><h2 style="margin:0 0 8px">敗者復活戦（'+(g==='AM'?'午前':'午後')+'）</h2><span class="chip'+(rows&&rows.done?'':' wait')+'">'+(rows&&rows.done?'確定':'未確定')+'</span></div><p class="small muted" style="margin:0 0 8px">'+L.from.join('・')+'リーグの3位による1セットマッチの総当たり。勝ち1点、負け0点で、順位はリーグと同じ順で決めます。上位2チームが決勝トーナメントへ進みます。新庄中学校で行います。</p>';
+    if(rows){
+      h+='<div class="card" style="padding:6px 8px;margin-bottom:8px"><div class="tw"><table><thead><tr><th>順位</th><th class="l">チーム</th><th>試合</th><th>勝</th><th>負</th><th>残存</th><th>削減</th></tr></thead><tbody>';
+      rows.list.forEach(function(r,i){h+='<tr class="'+(i<2?'adv':'')+(r.id===ui.my?' me':'')+'"><td class="num">'+(i+1)+'</td><td class="l">'+esc(tn(r.id))+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.l+'</td><td class="num">'+r.rs+'</td><td class="num">'+r.cs+'</td></tr>'});
+      h+='</tbody></table></div></div>';
+      if(rows.tie)h+='<p class="note" style="margin:0 0 8px">同じ成績のチームがいます。順位は運営が決めて発表します。</p>';
+    }
+    h+=cards(ms)+'</section>';
+  });
+  return h;
+}
+function cell(m,col,row,span,w){return '<div class="cell" style="grid-column:'+col+';grid-row:'+row+(span?'/span '+span:'')+'">'+matchCard(M[m])+'</div>'}
+function bracketHtml(){
+  var h='<div class="seg"><button data-act="kt" data-k="ko" aria-pressed="'+(ui.kt==='ko')+'">決勝トーナメント</button><button data-act="kt" data-k="fm" aria-pressed="'+(ui.kt==='fm')+'">フレンドリーマッチ</button></div>';
+  if(ui.kt==='ko'){
+    var c=champion();
+    if(c)h+='<div class="champ"><span class="small">優勝</span><b>'+esc(tn(c))+'</b></div>';
+    h+='<p class="small muted" style="margin:0 0 8px">12月6日(日) 東陽中学校。各リーグ1位・2位と、敗者復活戦の上位（午前2・午後2）の16チームが進出します。横にスクロールできます。</p>';
+    h+='<div class="brs"><div class="br c4">';
+    ['1回戦','準々決勝','準決勝','決勝'].forEach(function(t,i){h+='<div class="bh" style="grid-column:'+(i+1)+';grid-row:1">'+t+'</div>'});
+    for(var i=1;i<=8;i++)h+=cell('M'+i,1,i+1);
+    for(i=1;i<=4;i++)h+=cell('QF'+i,2,2*i,2);
+    for(i=1;i<=2;i++)h+=cell('SF'+i,3,4*i-2,4);
+    h+=cell('F',4,2,8)+'</div></div>';
+    h+='<h2 style="margin-top:22px">3位決定戦</h2><div style="max-width:340px">'+matchCard(M.TP)+'</div>';
+  }else{
+    h+='<p class="small muted" style="margin:0 0 8px">決勝トーナメント1回戦で負けたチームによる、負け下がりの3セットマッチです。決勝トーナメントと同じコートA・Bで行います。</p><div class="brs"><div class="br c3">';
+    ['1回戦','準決勝','決勝'].forEach(function(t,i){h+='<div class="bh" style="grid-column:'+(i+1)+';grid-row:1">'+t+'</div>'});
+    for(var j=1;j<=4;j++)h+=cell('FM'+j,1,j+1);
+    h+=cell('FSF1',2,2,2)+cell('FSF2',2,4,2)+cell('FF',3,2,4)+'</div></div>';
+  }
+  return h;
+}
+function adminHtml(){
+  var h='<section class="sec"><h2>運営メニュー</h2><p class="note">変更はこの端末にためておき、「公開する」を押したときにまとめて全員の画面へ反映されます。別々の試合を複数の運営が入力しても、互いの入力は消えません。同じ試合を同時に入力した場合は、あとから公開した内容が残ります。</p></section>';
+  h+='<section class="sec"><h2>進行と、予定とのずれ</h2><p class="small muted">コートごとの「いまの試合」を進めます。結果を保存すると、そのコートは自動で次へ進みます。予定より遅れたとき、または早まったときは、「遅れ」「早まり」と分数を入れると、そのコートの以降の時刻が変わります。</p>';
+  S.streams.forEach(function(s){
+    var n=nstream(s.id),cm=S.matches.filter(function(m){return m.stream===s.id&&m.ord===s.cur})[0],dir=s.dir||(s.delay<0?'early':'late');
+    h+='<div class="card" style="margin-bottom:8px"><div class="kv"><b>'+esc(s.day===1?(s.id.length===1?s.id+'リーグ ':'')+s.name:'2日目 '+s.name)+'</b></div>'
+      +'<div class="fld"><span>いまの試合</span><span class="kv"><button class="btn sm ghost" data-act="cur" data-s="'+s.id+'" data-v="-1">戻す</button><span>'+(s.cur<0?'開始前':s.cur>=n?'終了':esc(cm.tag))+'</span><button class="btn sm" data-act="cur" data-s="'+s.id+'" data-v="1">次へ進める</button></span></div>'
+      +'<div class="fld"><span>予定とのずれ</span><span class="kv"><select id="dd-'+s.id+'" style="width:auto" data-chg="dir" data-s="'+s.id+'" aria-label="遅れか早まりか"><option value="late"'+(dir==='late'?' selected':'')+'>遅れ</option><option value="early"'+(dir==='early'?' selected':'')+'>早まり</option></select><input id="dl-'+s.id+'" type="number" min="0" max="180" style="width:6em" value="'+Math.abs(s.delay||0)+'" data-chg="delay" data-s="'+s.id+'" aria-label="ずれの分数"><span>分</span></span></div></div>';
+  });
+  h+='</section><section class="sec"><h2>チーム名</h2><p class="small muted">仮の名前で入っています。抽選会（11月22日）のあと、実際のチーム名に書き換えてください。</p>';
+  BL.forEach(function(b){
+    h+='<div class="card" style="margin-bottom:10px"><h3>'+b+'リーグ</h3><div class="grid2">'+S.teams.filter(function(t){return t.block===b}).map(function(t){return '<label class="small muted">'+t.id+'<input type="text" style="width:100%" value="'+esc(t.name)+'" data-chg="tname" data-id="'+t.id+'" maxlength="24"></label>'}).join('')+'</div></div>';
+  });
+  h+='</section><section class="sec"><h2>進出チームを手で決める</h2><p class="small muted">順位は結果から自動で決まります。同じ成績で運営が順位を決めたときだけ、ここで指定します。「自動」のままなら変わりません。</p><div class="card"><div class="grid2">';
+  S.ko.refs.forEach(function(r){
+    h+='<label class="small muted">'+esc(refLabel(r))+'<select data-chg="over" data-r="'+r+'"><option value="">自動</option>'+S.teams.map(function(t){return '<option value="'+t.id+'"'+(S.ko.over[r]===t.id?' selected':'')+'>'+esc(t.name)+'</option>'}).join('')+'</select></label>';
+  });
+  h+='</div></div></section><section class="sec"><button class="btn warn" data-act="exitadmin">運営メニューを閉じる</button></section>';
+  return h;
+}
+function remSel(i,k,v){var o='<option value="">–</option>';for(var n=0;n<=8;n++)o+='<option value="'+n+'"'+(v===n?' selected':'')+'>'+n+'人</option>';return '<select data-chg="rem" data-i="'+i+'" data-k="'+k+'" aria-label="第'+(i+1)+'セット 残り内野人数">'+o+'</select>'}
+function sheetHtml(){
+  var m=M[ui.edit],ts=teamsOf(m),dr=ui.draft,a=0,b=0,locked=false,n=m.bo===1?1:3,nd=need(m);
+  var h='<div class="sheet-bg" data-act="bg"><div class="sheet" role="dialog" aria-modal="true" aria-label="結果入力"><h2>'+esc(m.tag)+' の結果</h2><p class="small muted" style="margin:0 0 6px">'+(n===1?'1セットマッチです。勝者を選び、セット終了時の残り内野人数を入れます。':'各セットの勝者を選び、セット終了時の残り内野人数を入れます。2セット先取で勝敗が決まります。')+'</p>';
+  for(var i=0;i<n;i++){
+    var dis=locked;
+    h+='<div class="setrow"><div class="lab">'+(n===1?'結果':'第'+(i+1)+'セット')+(dis?'（不要）':'')+'</div><div class="seg">'
+      +'<button data-act="setw" data-i="'+i+'" data-v="1" aria-pressed="'+(!dis&&dr[i]===1)+'"'+(dis?' disabled':'')+'>'+esc(tn(ts[0]))+'</button>'
+      +'<button data-act="setw" data-i="'+i+'" data-v="0" aria-pressed="'+(!dis&&dr[i]===0)+'"'+(dis?' disabled':'')+'>なし</button>'
+      +'<button data-act="setw" data-i="'+i+'" data-v="2" aria-pressed="'+(!dis&&dr[i]===2)+'"'+(dis?' disabled':'')+'>'+esc(tn(ts[1]))+'</button></div>'
+      +(dis?'':'<div class="grid2" style="margin-top:6px"><label class="small muted">'+esc(tn(ts[0]))+' の残り内野'+remSel(i,0,ui.draftRem[i][0])+'</label><label class="small muted">'+esc(tn(ts[1]))+' の残り内野'+remSel(i,1,ui.draftRem[i][1])+'</label></div>')+'</div>';
+    if(!dis){if(dr[i]===1)a++;else if(dr[i]===2)b++;if(a>=nd||b>=nd)locked=true}
+  }
+  h+='<div class="kv" style="margin:10px 0"><span class="big">'+a+' - '+b+'</span><span class="small muted">'+(a>=nd||b>=nd?'勝者: '+esc(tn(ts[a>b?0:1])):'まだ勝敗は決まっていません')+'</span></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="save">保存</button><button class="btn warn" data-act="clear">結果を消す</button><button class="btn ghost" data-act="close">閉じる</button></div></div></div>';
+  return h;
+}
+function navHtml(){
+  var tabs=[['home','ホーム'],['sched','日程'],['league','リーグ表'],['ko','トーナメント']];
+  if(ui.admin)tabs.push(['admin','運営']);
+  return '<nav class="nav" aria-label="メニュー"><div class="nav-in">'+tabs.map(function(t){return '<button data-act="tab" data-t="'+t[0]+'"'+(ui.tab===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>'}).join('')+'</div></nav>';
+}
+function pinHtml(){
+  return '<div class="sheet-bg" data-act="pinbg"><div class="sheet" role="dialog" aria-modal="true" aria-label="運営PIN"><h2>運営PINの入力</h2><p class="small muted" style="margin:0 0 10px">運営担当者に伝えられたPINを入力してください。</p><input id="pin-in" type="password" inputmode="numeric" autocomplete="off" style="width:100%;font-size:20px;box-sizing:border-box"><div class="kv" style="margin-top:14px"><button class="btn ghost" data-act="pincancel">やめる</button><button class="btn" data-act="pinok">開く</button></div></div></div>';
+}
+function updText(){
+  if(!S.updated)return '';
+  var d=new Date(S.updated);if(isNaN(d))return '';
+  try{return d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}
+}
+function render(){
+  var y=window.scrollY,body='';
+  if(ui.tab==='home')body=homeHtml();
+  else if(ui.tab==='sched')body=scheduleHtml();
+  else if(ui.tab==='league')body=leagueHtml();
+  else if(ui.tab==='ko')body=bracketHtml();
+  else if(ui.tab==='admin'&&ui.admin)body=adminHtml();
+  var foot=ui.admin?'':'<footer class="f"><div>表示は、運営が結果を入力するたびに、約'+Math.round(POLL/1000)+'秒ごとに自動で更新されます。</div>'+(ui.net===false?'<div class="small" style="margin-top:6px;color:var(--ball)">最新の情報を取得できません。電波の良い場所で、ページを開き直してください。</div>':'')+'<button class="btn ghost sm" data-act="login">運営の方はこちら</button></footer>';
+  app.innerHTML='<header class="top"><div class="top-in"><div class="brand">MM CUP2026<small>ドッジボール大会 進行表</small></div><div class="upd">最終更新<br><span class="num" style="font-size:16px;font-weight:700">'+esc(updText()||'—')+'</span></div><span class="court-mark"></span></div></header><main class="wrap" aria-live="polite">'+body+(ui.tab==='admin'?'':foot)+'</main>'
+    +(ui.dirty?'<div class="pubbar"><span>未公開の変更 '+ui.dirty+'件</span><button class="btn" data-act="publish"'+(ui.busy?' disabled':'')+'>'+(ui.busy?'公開中…':'公開する')+'</button></div>':'')
+    +navHtml()+(ui.edit?sheetHtml():'')+(ui.pinAsk?pinHtml():'')+(ui.toast?'<div class="toast" role="status">'+esc(ui.toast)+'</div>':'');
+  window.scrollTo(0,y);
+  if(ui.pinAsk){var pi=document.getElementById('pin-in');if(pi&&document.activeElement!==pi)pi.focus()}
+}
+var tt=0;
+function toast(t){ui.toast=t;render();clearTimeout(tt);tt=setTimeout(function(){ui.toast='';render()},4200)}
+function remember(){sset('mm_ui',JSON.stringify({tab:ui.tab,day:ui.day,admin:ui.admin,kt:ui.kt}))}
+function touch(){ui.dirty++}
+/* ---------- sync (Firebase Realtime Database / REST) ---------- */
+var CFG=window.MM_CONFIG||{},DB=String(CFG.dbUrl||'').replace(/\/+$/,''),POLL=(+CFG.pollSec||30)*1000;
+function overlay(){
+  var o={};
+  S.matches.forEach(function(m){o['m/'+m.id]=JSON.stringify({s:m.sets||[],r:m.rem||[]})});
+  S.streams.forEach(function(s){o['s/'+s.id]=JSON.stringify({c:s.cur,d:s.delay||0,r:s.dir||''})});
+  S.teams.forEach(function(t){o['n/'+t.id]=t.name});
+  o['x/o']=JSON.stringify(S.ko.over||{});
+  return o;
+}
+function applyKey(k,v){
+  var i=k.indexOf('/'),ty=k.slice(0,i),id=k.slice(i+1),o;
+  try{
+    if(ty==='m'){var m=M[id];if(!m)return;o=JSON.parse(v);m.sets=o.s||[];m.rem=o.r||[]}
+    else if(ty==='s'){var s=ST[id];if(!s)return;o=JSON.parse(v);s.cur=+o.c;s.delay=+o.d||0;if(o.r)s.dir=o.r;else delete s.dir}
+    else if(ty==='n'){var t=T[id];if(t)t.name=v||t.id}
+    else if(ty==='x'&&id==='o'){S.ko.over=JSON.parse(v)||{}}
+  }catch(e){}
+}
+var base=overlay(),pending=false;
+function pull(){
+  if(!DB)return Promise.resolve();
+  return fetch(DB+'/mm/pub.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    var was=ui.net;ui.net=true;
+    var rem={};
+    if(j&&typeof j==='object')Object.keys(j).forEach(function(sec){var o=j[sec];if(o&&typeof o==='object')Object.keys(o).forEach(function(k){if(typeof o[k]==='string')rem[sec+'/'+k]=o[k]})});
+    var loc=overlay(),ch=false,adopt=[];
+    Object.keys(rem).forEach(function(k){
+      if(k==='x/u'){if(S.updated!==rem[k]){S.updated=rem[k];ch=true}return}
+      if(loc[k]===base[k]){if(loc[k]!==rem[k]){applyKey(k,rem[k]);ch=true}adopt.push(k)}
+      else base[k]=rem[k];
+    });
+    var cur=overlay();adopt.forEach(function(k){base[k]=cur[k]});
+    if(ch||was!==true){if(ui.edit||ui.pinAsk)pending=true;else render()}
+  }).catch(function(){var was=ui.net;ui.net=false;if(was!==false&&!ui.edit&&!ui.pinAsk)render()});
+}
+function stamp(){var t=String(Date.now());return {t:t,pin:ui.pinTry+t}}
+async function patch(body){
+  var r=await fetch(DB+'/mm.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(r.status===401||r.status===403)throw {code:'pin'};
+  if(!r.ok)throw {code:'net'};
+}
+async function verifyPin(p){
+  ui.pinTry=p;var st=stamp();await patch({t:st.t,pin:st.pin});
+}
+async function publish(){
+  if(ui.busy||!ui.dirty)return;
+  if(!DB){toast('保存先が未設定のため、公開できません。');return}
+  ui.busy=true;render();
+  try{
+    var loc=overlay(),body={},st;
+    Object.keys(loc).forEach(function(k){if(loc[k]!==base[k])body['pub/'+k]=loc[k]});
+    var iso=new Date().toISOString();body['pub/x/u']=iso;
+    ui.pinTry=ui.pin;st=stamp();body.t=st.t;body.pin=st.pin;
+    await patch(body);
+    Object.keys(loc).forEach(function(k){base[k]=loc[k]});
+    S.updated=iso;ui.dirty=0;ui.busy=false;remember();
+    toast('公開しました。全員の画面に、約'+Math.round(POLL/1000)+'秒以内に反映されます。');
+  }catch(e){
+    ui.busy=false;
+    var c=e&&e.code,msg='公開できませんでした。通信を確認して、もう一度お試しください。入力した内容はこの端末に残っています。';
+    if(c==='pin'){ui.pin='';lset('mm_pin','');ui.pinAsk=true;msg='PINが違うか、変更されました。もう一度PINを入力してください。'}
+    toast(msg);
+  }
+}
+async function login(){
+  if(!DB||ui.pin){ui.admin=true;ui.tab='admin';remember();render();return}
+  ui.pinAsk=true;render();
+}
+async function pinOk(){
+  var el=document.getElementById('pin-in'),p=el?String(el.value||'').trim():'';
+  if(!p){toast('PINを入力してください。');return}
+  try{await verifyPin(p)}catch(e){toast(e&&e.code==='pin'?'PINが違います。':'通信できませんでした。もう一度お試しください。');return}
+  ui.pin=p;lset('mm_pin',p);ui.pinAsk=false;ui.admin=true;ui.tab='admin';remember();render();
+}
+/* ---------- events ---------- */
+function act(a,d,el,e){
+  if(a==='tab'){ui.tab=d.t;remember();render();window.scrollTo(0,0);return}
+  if(a==='day'){ui.day=+d.d;ui.filter='all';remember();render();return}
+  if(a==='filter'){ui.filter=d.f;render();return}
+  if(a==='kt'){ui.kt=d.k;remember();render();return}
+  if(a==='onlyme'){ui.onlyMe=!ui.onlyMe;render();return}
+  if(a==='login'){login();return}
+  if(a==='pinok'){pinOk();return}
+  if(a==='pincancel'){ui.pinAsk=false;render();return}
+  if(a==='pinbg'){if(e.target===el){ui.pinAsk=false;render()}return}
+  if(a==='exitadmin'){ui.admin=false;ui.tab='home';remember();render();return}
+  if(a==='publish'){publish();return}
+  if(a==='bg'){if(e.target===el){ui.edit=null;render()}return}
+  if(a==='close'){ui.edit=null;render();return}
+  if(a==='edit'){var m=M[d.id],ss=m.sets||[];ui.edit=d.id;ui.draft=[ss[0]||0,ss[1]||0,ss[2]||0];ui.draftRem=[0,1,2].map(function(i){var q=(m.rem||[])[i];return q?[q[0],q[1]]:[null,null]});render();return}
+  if(a==='setw'){ui.draft[+d.i]=+d.v;render();return}
+  if(a==='clear'){M[ui.edit].sets=[];M[ui.edit].rem=[];ui.edit=null;touch();render();return}
+  if(a==='save'){
+    var m2=M[ui.edit],w1=0,w2=0,sets=[],nd=need(m2),n=m2.bo===1?1:3;
+    for(var i=0;i<n;i++){if(w1>=nd||w2>=nd)break;var v=ui.draft[i];sets.push(v);if(v===1)w1++;else if(v===2)w2++}
+    while(sets.length&&sets[sets.length-1]===0)sets.pop();
+    m2.sets=sets;m2.rem=sets.map(function(v,i){var q=ui.draftRem[i];return (q&&q[0]!=null&&q[1]!=null)?[q[0],q[1]]:[null,null]});
+    if(res(m2).done){var s=ST[m2.stream];s.cur=Math.min(Math.max(s.cur,m2.ord+1),nstream(s.id))}
+    ui.edit=null;touch();render();return;
+  }
+  if(a==='cur'){var s2=ST[d.s];s2.cur=Math.max(-1,Math.min(nstream(s2.id),s2.cur+(+d.v)));touch();render();return}
+}
+app.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(el)act(el.dataset.act,el.dataset,el,e)});
+app.addEventListener('change',function(e){
+  var el=e.target.closest('[data-chg]');if(!el)return;var k=el.dataset.chg,v=el.value;
+  if(k==='rem'){ui.draftRem[+el.dataset.i][+el.dataset.k]=v===''?null:+v;return}
+  if(k==='my'){ui.my=v;lset('mm_my',v);render();return}
+  if(k==='tname'){var t=T[el.dataset.id];t.name=(v||'').trim()||t.id;touch();render();return}
+  if(k==='delay'){var s3=ST[el.dataset.s],n3=Math.max(0,Math.min(180,parseInt(v,10)||0));s3.delay=(s3.dir==='early'||(!s3.dir&&s3.delay<0))?-n3:n3;touch();render();return}
+  if(k==='dir'){var s4=ST[el.dataset.s];s4.dir=v;s4.delay=(v==='early'?-1:1)*Math.abs(s4.delay||0);touch();render();return}
+  if(k==='over'){if(v)S.ko.over[el.dataset.r]=v;else delete S.ko.over[el.dataset.r];touch();render();return}
+});
+render();
+if(ui.pinAsk===false){}
+pull();
+setInterval(function(){if(!document.hidden)pull()},POLL);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)pull()});
+})();
+</script>
+</body></html>
