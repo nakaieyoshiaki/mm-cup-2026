@@ -127,6 +127,49 @@ footer.f .btn{margin-top:8px}
 @media (max-width:420px){.big{font-size:38px}.fld{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:no-preference){.chip.live{animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.72}}}
 .jr{padding:6px 12px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}.jr .jl{display:inline-block;margin-right:8px;padding:0 6px;border-radius:4px;background:var(--soft);font-weight:700}.jr.me{color:#14532d;font-weight:700}
+#prt{display:none;position:fixed;inset:0;z-index:9999;background:#e6ece9;overflow:auto}
+.prt-bar{position:sticky;top:0;z-index:2;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.pg{background:#fff;color:#111;margin:10px auto;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;page-break-after:always;box-shadow:0 1px 6px rgba(0,0,0,.2);zoom:var(--z,1)}
+.pg:last-child{page-break-after:auto}
+.pg.poster{width:420mm;height:296mm;padding:11mm;font-size:14.7pt}
+.pg.hand,.pg.rec,.pg.result{width:297mm;height:209mm;padding:8mm;font-size:10.5pt}
+.pg-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2em .8em;background:#17694d;color:#fff;padding:.5em .8em;border-radius:.25em}
+.pg-h>*{white-space:nowrap}.pg-h b{font-size:.9em}.pg-t{font-size:1.9em;font-weight:900}.pg-s{font-size:.85em}
+.pg-h em{margin-left:auto;font-style:normal;font-size:.75em;border:1px solid #fff;border-radius:1em;padding:.05em .8em}
+.pg-b{flex:1;min-height:0;display:grid;grid-template-columns:36% 1fr;gap:1.2em;margin-top:.3em}
+.pg-l{display:flex;flex-direction:column;min-height:0}.pg-r{display:flex;flex-direction:column;min-height:0}
+.pg h3{font-size:1.05em;margin:.7em 0 .3em;color:#17694d;border-left:.3em solid #17694d;padding-left:.4em}
+.pt{display:grid;gap:.3em}
+.pt div{border:1px solid #17694d;border-radius:.25em;padding:.1em .5em;background:#e3efe9;display:flex;align-items:baseline;gap:.5em}
+.pt b{font-size:1em;line-height:1.25}.pt small{font-size:.7em;color:#555;min-width:1.6em}
+.sch{flex:1;min-height:0;display:grid;grid-auto-rows:minmax(min-content,1fr);gap:.3em}
+.mb{border:1px solid #444;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.mh{display:flex;align-items:baseline;gap:.6em;background:#dcebe4;padding:0 .5em;font-size:.85em;border-bottom:1px solid #444}.mh b{font-weight:700}.mh span{font-weight:700}
+.mt{flex:1;display:flex;flex-direction:column;justify-content:center;padding:.05em .5em;line-height:1.25;font-size:.9em;font-weight:700}
+.mt{white-space:nowrap;font-size:1.05em}.mt .vs{font-weight:400;font-size:.8em;color:#555}
+.mr{padding:.1em .5em .15em;font-size:.72em;color:#333;line-height:1.3;border-top:1px dotted #999}.mr .rj{display:inline-block;margin-right:.5em;padding:0 .4em;border:1px solid #666;border-radius:.3em;font-size:.85em}
+.pg-tb{width:100%;border-collapse:collapse;font-size:.85em}
+.pg-tb th,.pg-tb td{border:1px solid #444;padding:.25em .3em;text-align:center}
+.pg-tb th{background:#dcebe4}.pg-tb td.l{text-align:left;line-height:1.25}.pg .vs{font-size:.75em;color:#666}
+.xg{flex:1;min-height:0;display:grid;border-top:1px solid #444;border-left:1px solid #444}
+.xg .c{border-right:1px solid #444;border-bottom:1px solid #444;display:flex;align-items:center;justify-content:center;text-align:center;padding:.2em;min-width:0;overflow-wrap:anywhere}
+.xg .hd{background:#dcebe4;font-weight:700;font-size:.9em}.xg .rl{padding:.2em .4em;white-space:nowrap;justify-content:flex-start;gap:.5em}.xg .cd{font-size:1.05em}.xg .rl .cd{color:#17694d;min-width:1.4em;text-align:center}
+.xg .d{background:#d4d4d4}
+.pg .ph{color:#b8bec2;font-weight:400}
+.pg.poster .xg .m,.pg.hand .xg .m{color:#b8bec2;font-size:1.25em;line-height:1.5}
+.pg.poster .xg .m .mn,.pg.hand .xg .m .mn{font-weight:400}
+.pg.rec .xg .m{align-items:flex-start;justify-content:flex-start;text-align:left;font-size:.95em;color:#333;padding:.3em .4em}
+.pg.result .xg .rz{font-size:1.25em}.pg .xg .rz.w b{color:#17694d;font-size:1.5em}.pg .xg .rz.lo b{color:#555;font-size:1.5em}.pg .xg .rz .sc{font-size:.9em;font-weight:700}.pg .xg .rz.pend{color:#b8bec2;font-size:.9em}
+.pg .xg .rk{font-size:1.5em;font-weight:900}.pg .xg .adv{background:#cfe8da}.pg .xg .wc{background:#fde1c8}.xg .hd.adv{background:#b9ddc9}.xg .hd.wc{background:#fbd0a8}
+.mh .rv{margin-left:auto;font-weight:700}.mt .wm{color:#17694d}
+.pg-f{font-size:.72em;color:#444;margin:.5em 0 0;line-height:1.4}
+@media print{
+ body.prt-on>*:not(#prt){display:none!important}
+ #prt{position:static;overflow:visible;background:#fff}
+ .noprint{display:none!important}
+ .pg{margin:0;box-shadow:none;zoom:1}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style></head><body>
 <div id="app"></div>
 <noscript>このページはJavaScriptが必要です。</noscript>
@@ -416,7 +459,7 @@ function adminHtml(){
   BL.forEach(function(b){
     h+='<div class="card" style="margin-bottom:10px"><h3>'+b+'リーグ</h3><div class="grid2">'+S.teams.filter(function(t){return t.block===b}).map(function(t){return '<label class="small muted">'+t.id+'<input type="text" style="width:100%" value="'+esc(t.name)+'" data-chg="tname" data-id="'+t.id+'" maxlength="24"></label>'}).join('')+'</div></div>';
   });
-  h+='</section><section class="sec"><h2>進出チームを手で決める</h2><p class="small muted">順位は結果から自動で決まります。同じ成績で運営が順位を決めたときだけ、ここで指定します。「自動」のままなら変わりません。</p><div class="card"><div class="grid2">';
+  h+='</section><section class="sec"><h2>リーグ表を出力</h2><p class="small muted">チーム名を入れたあとに押してください。A〜Fリーグと敗者復活戦の、8枚を作ります。「成績表」は、結果が入った状態を出力します。印刷するか、PDFとして保存できます。</p><div class="kv"><button class="btn" data-act="prt" data-m="poster">掲示用（A3横）</button><button class="btn" data-act="prt" data-m="hand">配布用（A4横）</button><button class="btn" data-act="prt" data-m="rec">本部記録用（A4横）</button><button class="btn" data-act="prt" data-m="result">成績表（結果入り・A4横）</button></div></section><section class="sec"><h2>進出チームを手で決める</h2><p class="small muted">順位は結果から自動で決まります。同じ成績で運営が順位を決めたときだけ、ここで指定します。「自動」のままなら変わりません。</p><div class="card"><div class="grid2">';
   S.ko.refs.forEach(function(r){
     h+='<label class="small muted">'+esc(refLabel(r))+'<select data-chg="over" data-r="'+r+'"><option value="">自動</option>'+S.teams.map(function(t){return '<option value="'+t.id+'"'+(S.ko.over[r]===t.id?' selected':'')+'>'+esc(t.name)+'</option>'}).join('')+'</select></label>';
   });
@@ -424,6 +467,77 @@ function adminHtml(){
   return h;
 }
 function remSel(i,k,v){var o='<option value="">–</option>';for(var n=0;n<=8;n++)o+='<option value="'+n+'"'+(v===n?' selected':'')+'>'+n+'人</option>';return '<select data-chg="rem" data-i="'+i+'" data-k="'+k+'" aria-label="第'+(i+1)+'セット 残り内野人数">'+o+'</select>'}
+/* ---------- print sheets ---------- */
+var PRT_MODE='poster';
+var PRT_INFO={poster:{n:'掲示用',paper:'A3',w:420,h:297},hand:{n:'配布用',paper:'A4',w:297,h:210},rec:{n:'本部記録用',paper:'A4',w:297,h:210},result:{n:'成績表',paper:'A4',w:297,h:210}};
+function nmOf(x){var q=ref(x);return q?tn(q):refLabel(x)}
+function nmH(x){return ref(x)?esc(nmOf(x)):'<span class="ph">'+esc(nmOf(x))+'</span>'}
+var CN=['①','②','③','④','⑤','⑥'];
+function nmS(x,lim){var nm=nmOf(x),sc=nm.length>lim?Math.max(.55,lim/nm.length):1,t=ref(x)?esc(nm):'<span class="ph">'+esc(nm)+'</span>';return sc<1?'<span style="font-size:'+sc.toFixed(2)+'em">'+t+'</span>':t}
+function vsz(m){var n=nmOf(m.t[0]).length+nmOf(m.t[1]).length+4,sc=n>26?Math.max(.55,26/n):1;return sc<1?'font-size:'+sc.toFixed(2)+'em':''}
+function prtPage(o){
+  var ids=o.ids,ms=o.ms,mode=o.mode,rec=mode==='rec',rs=mode==='result',lb=o.lb,n=ids.length,RK={};
+  (o.stand||[]).forEach(function(r,i){RK[r.id]={r:r,k:i+1}});
+  var h='<section class="pg '+mode+'"><div class="pg-h"><b>MM CUP2026</b><span class="pg-t">'+esc(o.title)+'</span><span class="pg-s">'+esc(o.sub)+'</span>'+(rs?'<span class="pg-s">'+(o.done?'確定':'暫定')+'</span>':'')+'<em>'+PRT_INFO[mode].n+'</em></div><div class="pg-b"><div class="pg-l">';
+  h+='<h3>参加チーム</h3><div class="pt">'+ids.map(function(x){var q=ref(x),nm=nmOf(x);return '<div><small>'+(q&&q!==nm?esc(q):'')+'</small><b>'+(q?esc(nm):'<span class="ph">'+esc(nm)+'</span>')+'</b></div>'}).join('')+'</div>';
+  h+='<h3>試合日程</h3><div class="sch">';
+  ms.forEach(function(m){
+    var r=rs?res(m):null,w1=rs&&r.done&&r.win===1?'<b class="wm">○ </b>':'',w2=rs&&r.done&&r.win===2?'<b class="wm">○ </b>':'',rv=rs?'<span class="rv">'+(r.done?(lb?'終了':r.w1+' - '+r.w2):(status(m)==='live'?'試合中':'未実施'))+'</span>':'';
+    h+='<div class="mb"><div class="mh"><b>第'+(m.ord+1)+'試合</b><span>'+fm(m.s)+'</span>'+rv+'</div><div class="mt"><div style="'+vsz(m)+'">'+w1+nmH(m.t[0])+'<span class="vs">　vs　</span>'+w2+nmH(m.t[1])+'</div></div><div class="mr"><span class="rj">審判</span>'+((m.jr||[]).length?m.jr.map(function(x){return nmH(x)}).join('・'):'運営')+'</div></div>';
+  });
+  h+='</div></div><div class="pg-r"><h3>対戦表</h3>';
+  var st=(rec||rs)?['勝','負','勝点','残存','削減','順位']:['勝点','残存','削減','順位'];
+  h+='<div class="xg" style="grid-template-columns:12.2em repeat('+n+',2fr) repeat('+st.length+',1fr);grid-template-rows:auto repeat('+n+',1fr)"><div class="c hd"></div>'+ids.map(function(x,i){return '<div class="c hd cd">'+esc(lb?CN[i]:x)+'</div>'}).join('')+st.map(function(t){return '<div class="c hd">'+t+'</div>'}).join('');
+  ids.forEach(function(a,ai){
+    h+='<div class="c hd rl'+(rs&&RK[lb?ref(a):a]?(RK[lb?ref(a):a].k<=2?' adv':(!lb&&RK[lb?ref(a):a].k===3?' wc':'')):'')+'"><span class="cd">'+esc(lb?CN[ai]:a)+'</span>'+nmS(a,10)+'</div>';
+    ids.forEach(function(c){
+      if(a===c){h+='<div class="c d"></div>';return}
+      var m=ms.find(function(x){return (x.t[0]===a&&x.t[1]===c)||(x.t[0]===c&&x.t[1]===a)});
+      if(rs&&m){
+        var r=res(m);
+        if(r.done){var mine=m.t[0]===a?r.w1:r.w2,opp=m.t[0]===a?r.w2:r.w1,win=mine>opp;h+='<div class="c rz '+(win?'w':'lo')+'"><div><b>'+(win?'○':'●')+'</b>'+(lb?'':'<br><span class="sc">'+mine+' - '+opp+'</span>')+'</div></div>';return}
+        h+='<div class="c rz pend"><div>'+(status(m)==='live'?'<b>試合中</b>':'第'+(m.ord+1)+'試合<br><small>'+fm(m.s)+'</small>')+'</div></div>';return;
+      }
+      h+='<div class="c m"><div>'+(m?'<span class="mn">第'+(m.ord+1)+'試合</span>'+(rec?'':'<br><small>'+fm(m.s)+'</small>'):'')+'</div></div>';
+    });
+    if(rs){
+      var q=RK[lb?ref(a):a],r2=q&&q.r,k=q?q.k:0;
+      if(r2){h+='<div class="c">'+r2.w+'</div><div class="c">'+r2.l+'</div><div class="c"><b>'+r2.pts+'</b></div><div class="c">'+r2.rs+'</div><div class="c">'+r2.cs+'</div><div class="c rk '+(k<=2?'adv':(!lb&&k===3?'wc':''))+'">'+k+'</div>';return}
+    }
+    st.forEach(function(){h+='<div class="c"></div>'});
+  });
+  h+='</div></div></div><p class="pg-f">'+(lb?'1セットマッチの総当たり。勝ち1点、負け0点。上位2チームが決勝トーナメントへ進みます。':'3セットマッチ。2-0で勝つと2点、2-1で勝つと1点、負けは0点。1位・2位が決勝トーナメントへ、3位は敗者復活戦へ進みます。')+'順位は、勝点、残存（残り内野人数の合計）、削減、直接対決、じゃんけんの順に決めます。'+(rs?(lb?'緑：決勝トーナメント進出。':'緑：決勝トーナメント進出、橙：敗者復活戦へ。')+(o.done&&o.tie?'同じ成績のチームがいます。順位は運営が決めて発表します。':''):'')+'</p></section>';
+  return h;
+}
+function printHtml(mode){
+  var d=S.days[0],h='',byOrd=function(a,b){return a.ord-b.ord};
+  BL.forEach(function(b){
+    h+=prtPage({title:b+'リーグ',sub:fmtDate(d.date)+' ・ '+ST[b].name,ids:S.teams.filter(function(t){return t.block===b}).map(function(t){return t.id}),ms:S.matches.filter(function(m){return m.stage==='league'&&m.block===b}).sort(byOrd),mode:mode,lb:false,stand:standings(b),done:blockDone(b),tie:hasTie(standings(b),'league')});
+  });
+  ['AM','PM'].forEach(function(g){
+    h+=prtPage({title:'敗者復活戦（'+(g==='AM'?'午前':'午後')+'）',sub:fmtDate(d.date)+' ・ '+ST['LB'+g].name,ids:S.lb[g].from.map(function(b){return 'R:'+b+':3'}),ms:lbMatches(g).sort(byOrd),mode:mode,lb:true,stand:(lbRows(g)||{}).list,done:!!(lbRows(g)&&lbRows(g).done),tie:!!(lbRows(g)&&lbRows(g).tie)});
+  });
+  return h;
+}
+function prtZoom(){var el=document.getElementById('prt');if(!el)return;var i=PRT_INFO[PRT_MODE],z=Math.min(1,(el.clientWidth-16)/(i.w*3.7795));el.style.setProperty('--z',Math.max(.2,z).toFixed(3))}
+function openPrint(mode){
+  PRT_MODE=PRT_INFO[mode]?mode:'poster';
+  var el=document.getElementById('prt'),i=PRT_INFO[PRT_MODE];
+  if(!el){
+    el=document.createElement('div');el.id='prt';document.body.appendChild(el);
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('[data-p]');if(!b)return;var p=b.dataset.p;
+      if(p==='close'){el.style.display='none';document.body.classList.remove('prt-on');return}
+      if(p==='go'){window.print();return}
+      openPrint(p);
+    });
+    window.addEventListener('resize',prtZoom);
+  }
+  var ps=document.getElementById('prt-page');if(!ps){ps=document.createElement('style');ps.id='prt-page';document.head.appendChild(ps)}
+  ps.textContent='@page{size:'+i.paper+' landscape;margin:0}';
+  el.innerHTML='<div class="noprint prt-bar">'+['poster','hand','rec','result'].map(function(k){return '<button class="btn sm'+(PRT_MODE===k?'':' ghost')+'" data-p="'+k+'">'+PRT_INFO[k].n+'</button>'}).join('')+'<span class="sp" style="flex:1"></span><button class="btn sm" data-p="go">印刷／PDF保存</button><button class="btn sm ghost" data-p="close">閉じる</button></div><div class="prt-body">'+printHtml(PRT_MODE)+'<p class="noprint small muted" style="text-align:center">'+i.n+'：'+i.paper+'横。印刷の画面で、「送信先」を「PDFに保存」にするとPDFになります。「余白」は「なし」、「倍率」は100%にしてください。</p></div>';
+  el.style.display='block';document.body.classList.add('prt-on');el.scrollTop=0;prtZoom();
+}
 function sheetHtml(){
   var m=M[ui.edit],ts=teamsOf(m),dr=ui.draft,a=0,b=0,locked=false,n=m.bo===1?1:3,nd=need(m);
   var h='<div class="sheet-bg" data-act="bg"><div class="sheet" role="dialog" aria-modal="true" aria-label="結果入力"><h2>'+esc(m.tag)+' の結果</h2><p class="small muted" style="margin:0 0 6px">'+(n===1?'1セットマッチです。勝者を選び、セット終了時の残り内野人数を入れます。':'各セットの勝者を選び、セット終了時の残り内野人数を入れます。2セット先取で勝敗が決まります。')+'</p>';
@@ -553,6 +667,7 @@ function act(a,d,el,e){
   if(a==='filter'){ui.filter=d.f;render();return}
   if(a==='kt'){ui.kt=d.k;remember();render();return}
   if(a==='onlyme'){ui.onlyMe=!ui.onlyMe;render();return}
+  if(a==='prt'){openPrint(d.m);return}
   if(a==='login'){login();return}
   if(a==='pinok'){pinOk();return}
   if(a==='pincancel'){ui.pinAsk=false;render();return}
