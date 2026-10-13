@@ -154,7 +154,7 @@ footer.f .btn{margin-top:8px}
 .xg{flex:1;min-height:0;display:grid;border-top:1px solid #444;border-left:1px solid #444}
 .xg .c{border-right:1px solid #444;border-bottom:1px solid #444;display:flex;align-items:center;justify-content:center;text-align:center;padding:.2em;min-width:0;overflow-wrap:anywhere}
 .xg .hd{background:#dcebe4;font-weight:700;font-size:.9em}.xg .rl{padding:.2em .4em;white-space:nowrap;justify-content:flex-start;gap:.5em}.xg .cd{font-size:1.05em}.xg .rl .cd{color:#17694d;min-width:1.4em;text-align:center}
-.xg .d{background:#d4d4d4}
+.xg .d{background:#d4d4d4}.xg .hn{white-space:nowrap;font-size:.7em;font-weight:700;line-height:1.25;display:inline-block;margin-top:.1em}.pg.rec .pg-b{grid-template-columns:32% 1fr}
 .pg .ph{color:#b8bec2;font-weight:400}
 .pg.poster .xg .m,.pg.hand .xg .m{color:#b8bec2;font-size:1.25em;line-height:1.5}
 .pg.poster .xg .m .mn,.pg.hand .xg .m .mn{font-weight:400}
@@ -487,9 +487,9 @@ function prtPage(o){
   });
   h+='</div></div><div class="pg-r"><h3>対戦表</h3>';
   var st=(rec||rs)?['勝','負','勝点','残存','削減','順位']:['勝点','残存','削減','順位'];
-  h+='<div class="xg" style="grid-template-columns:12.2em repeat('+n+',2fr) repeat('+st.length+',1fr);grid-template-rows:auto repeat('+n+',1fr)"><div class="c hd"></div>'+ids.map(function(x,i){return '<div class="c hd cd">'+esc(lb?CN[i]:x)+'</div>'}).join('')+st.map(function(t){return '<div class="c hd">'+t+'</div>'}).join('');
+  h+='<div class="xg" style="grid-template-columns:'+(rec?'10.4em repeat('+n+',2.6fr) .6fr .6fr .9fr .9fr .9fr .9fr':'12.2em repeat('+n+',2fr) repeat('+st.length+',1fr)')+';grid-template-rows:auto repeat('+n+',1fr)"><div class="c hd"></div>'+ids.map(function(x,i){return '<div class="c hd cd"><div>'+esc(lb?CN[i]:x)+'<br><span class="hn">'+nmS(x,9)+'</span></div></div>'}).join('')+st.map(function(t){return '<div class="c hd">'+t+'</div>'}).join('');
   ids.forEach(function(a,ai){
-    h+='<div class="c hd rl'+(rs&&RK[lb?ref(a):a]?(RK[lb?ref(a):a].k<=2?' adv':(!lb&&RK[lb?ref(a):a].k===3?' wc':'')):'')+'"><span class="cd">'+esc(lb?CN[ai]:a)+'</span>'+nmS(a,10)+'</div>';
+    h+='<div class="c hd rl'+(rs&&RK[lb?ref(a):a]?(RK[lb?ref(a):a].k<=2?' adv':(!lb&&RK[lb?ref(a):a].k===3?' wc':'')):'')+'"><span class="cd">'+esc(lb?CN[ai]:a)+'</span>'+nmS(a,rec?8:10)+'</div>';
     ids.forEach(function(c){
       if(a===c){h+='<div class="c d"></div>';return}
       var m=ms.find(function(x){return (x.t[0]===a&&x.t[1]===c)||(x.t[0]===c&&x.t[1]===a)});
