@@ -170,7 +170,7 @@ footer.f .btn{margin-top:8px}
 .b8ch{display:flex;gap:6px}.b8c{flex:1;min-height:40px;border:1px solid var(--court);border-radius:8px;background:var(--surface);color:var(--court);font:inherit;font-weight:700;padding:4px 2px}.b8c.on{background:var(--court);color:var(--court-ink)}.b8c[disabled]{opacity:.4}
 .b8tk{display:inline-block;margin:2px 4px 2px 0;white-space:nowrap}
 .b8k{width:1.3em;height:1.3em;border:2px solid var(--court);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:.95em;color:var(--court);flex:none}.b8r.on .b8k{background:var(--court);color:var(--court-ink)}
-.b8n{min-width:1.8em;font-weight:900;color:var(--court)}.b8m{min-width:0;overflow-wrap:anywhere}
+.b8n{min-width:3em;font-size:1.15em;font-weight:900;color:var(--court)}.b8m{min-width:0;overflow-wrap:anywhere}
 .b8bar{position:sticky;bottom:70px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--court);border-radius:10px;padding:8px 12px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .b8t{display:inline-block;padding:1px 8px;margin:2px;border:1px solid var(--line);border-radius:999px;color:#777}.b8t.ok{background:var(--soft);border-color:var(--court);color:var(--court);font-weight:700}
 .b8tb{width:100%;border-collapse:collapse}.b8tb th,.b8tb td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}.b8tb td.num,.b8tb th:nth-child(2),.b8tb th:nth-child(4){text-align:center}.b8tb tr.on{background:var(--soft)}
@@ -594,17 +594,23 @@ function updText(){
 /* ---------- ベスト8プレイヤー選出（下部メニュー「ベスト8」） ---------- */
 var B8_NOSELF=true;
 var B8Q=[['o','オフェンス部門',3,'攻撃面において特に活躍した選手'],['d','ディフェンス部門',4,'守備において特に活躍した選手、攻守両面で活躍したユーティリティ選手'],['k','パスカット部門',1,'パスカットで特に活躍した選手']];
-var b8={ok:false,pin:sget('mm_b8pin')||'',key:'',r:{},v:{},cfg:null,cdr:null,team:lget('mm_b8t')||'',sel:{o:{},d:{},k:{}},touched:false,busy:false,msg:'',view:'vote',rt:'',adm:false,fin:null,finKey:'',finTouched:false};
-function b8Roster(id){try{var a=JSON.parse(b8.r[id]||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
-function b8Ballot(id){try{var o=JSON.parse(b8.v[id]||'null');return o&&typeof o==='object'?{o:o.o||[],d:o.d||[],k:o.k||[]}:null}catch(e){return null}}
+var b8={nm:{},nkey:'',ok:false,pin:sget('mm_b8pin')||'',key:'',r:{},v:{},cfg:null,cdr:null,team:lget('mm_b8t')||'',sel:{o:{},d:{},k:{}},touched:false,busy:false,msg:'',view:'vote',rt:'',adm:false,fin:null,finKey:'',finTouched:false};
+function b8Roster(id){try{var a=JSON.parse(b8.r[id]||'[]');return Array.isArray(a)?a.map(function(p){return [p[0]]}):[]}catch(e){return[]}}
+function b8Names(id){var a=null;try{a=JSON.parse((b8.nm&&b8.nm[id])||'null')}catch(e){}if(!Array.isArray(a)){try{a=JSON.parse(b8.r[id]||'[]')}catch(e){a=[]}}return Array.isArray(a)?a.filter(function(p){return p[1]}):[]}
+function b8Nm(id,n){var l=b8Names(id);for(var i=0;i<l.length;i++)if(String(l[i][0])===String(n))return l[i][1];return ''}
+function b8Parse(s){try{var o=JSON.parse(s||'null');return o&&typeof o==='object'?{o:o.o||[],d:o.d||[],k:o.k||[]}:null}catch(e){return null}}
+function b8MyId(team){return lget('mm_b8id_'+team)||''}
+function b8Ballot(team){var i=b8MyId(team);return i?b8Parse(b8.v['b_'+i]):null}
+function b8Voted(team){return !!b8.v['u_'+team]}
+function b8Had(team){return b8Voted(team)?(b8Ballot(team)?'mine':'other'):''}
 function b8Targets(){return (b8.cfg&&Array.isArray(b8.cfg.t))?b8.cfg.t:[]}
 function b8Sf(){var o=[];['SF1','SF2'].forEach(function(k){if(M[k])teamsOf(M[k]).forEach(function(t){if(t&&o.indexOf(t)<0)o.push(t)})});return o}
 function b8InitSel(){b8.sel={o:{},d:{},k:{}};var bl=b8Ballot(b8.team);if(bl)B8Q.forEach(function(q){bl[q[0]].forEach(function(id){b8.sel[q[0]][id]=1})});b8.touched=false}
 function b8Count(c){return Object.keys(b8.sel[c]).filter(function(k){return b8.sel[c][k]}).length}
 function b8Tally(){
   var tg=b8Targets(),cnt={o:{},d:{},k:{}},pl=[],n=0,res={ballots:0,cats:{}};
-  tg.forEach(function(t){b8Roster(t).forEach(function(p){var id=t+':'+p[0];pl.push({id:id,t:t,n:p[0],name:p[1]});B8Q.forEach(function(q){cnt[q[0]][id]=0})})});
-  Object.keys(b8.v).forEach(function(vt){var bl=b8Ballot(vt);if(!bl)return;n++;B8Q.forEach(function(q){bl[q[0]].forEach(function(id){if(id in cnt[q[0]]&&!(B8_NOSELF&&id.split(':')[0]===vt))cnt[q[0]][id]++})})});
+  tg.forEach(function(t){b8Roster(t).forEach(function(p){var id=t+':'+p[0];pl.push({id:id,t:t,n:p[0],name:b8Nm(t,p[0])||'（氏名未登録）'});B8Q.forEach(function(q){cnt[q[0]][id]=0})})});
+  Object.keys(b8.v).forEach(function(k){if(k.indexOf('b_')!==0)return;var bl=b8Parse(b8.v[k]);if(!bl)return;n++;B8Q.forEach(function(q){bl[q[0]].forEach(function(id){if(id in cnt[q[0]])cnt[q[0]][id]++})})});
   res.ballots=n;
   B8Q.forEach(function(q){
     var c=q[0],N=q[2],rows=pl.map(function(p){return {id:p.id,t:p.t,n:p.n,name:p.name,c:cnt[c][p.id]}}).filter(function(r){return r.c>0});
@@ -636,36 +642,36 @@ function b8Vote(){
   if(!b8.team)return h+'<p class="note" style="margin-top:10px">チームを選んでください。</p></section>';
   var tg=b8Targets();
   if(!tg.length)return h+'<p class="note" style="margin-top:10px">まだ、選考が始まっていません。準決勝が近づくと、対象のチームの選手が表示されます。</p></section>';
-  var had=b8Ballot(b8.team);
-  h+='<div class="small muted" style="margin:10px 0;line-height:1.7">対象のチームの選手から、各部門にふさわしい選手を選んでください。選手ごとのボタンを押すと、選べます。'+(B8_NOSELF?'自分のチームの選手は選べません。':'')+B8Q.map(function(q){return '<br><b>'+q[1]+'（最大'+q[2]+'人）</b>　'+esc(q[3])}).join('')+(had?'<br><b>送信済みです。選び直して、もう一度送ると上書きされます。</b>':'')+'</div>';
+  var had=b8Had(b8.team);
+  h+='<div class="small muted" style="margin:10px 0;line-height:1.7">対象のチームの選手から、各部門にふさわしい選手を選んでください。選手ごとのボタンを押すと、選べます。'+(B8_NOSELF?'自分のチームの選手は選べません。':'')+B8Q.map(function(q){return '<br><b>'+q[1]+'（最大'+q[2]+'人）</b>　'+esc(q[3])}).join('')+'<br><b>選手は背番号だけで表示されます。投票は、どのチームが誰に入れたか分からない形で保存されます。</b>'+(had==='mine'?'<br><b>送信済みです。選び直して、もう一度送ると上書きされます。</b>':(had==='other'?'<br><b>このチームは、すでに送信済みです（別の端末から送られています）。</b>':''))+'</div>';
   tg.forEach(function(t){
     var ro=b8Roster(t),own=B8_NOSELF&&t===b8.team;
     h+='<div class="card" style="margin-bottom:10px"><h3 style="margin:0 0 6px">'+esc(tn(t))+(own?' <span class="small muted">（自分のチーム）</span>':'')+'</h3>';
     if(!ro.length)h+='<p class="small muted" style="margin:0">選手が登録されていません。運営へお知らせください。</p>';
     else ro.forEach(function(p){
       var id=t+':'+p[0];
-      h+='<div class="b8p"><div class="b8pn"><span class="b8n">'+esc(p[0])+'</span><span class="b8m">'+esc(p[1])+'</span></div><div class="b8ch">'+B8Q.map(function(q){var on=!!b8.sel[q[0]][id];return '<button class="b8c'+(on?' on':'')+'" data-act="b8pick" data-c="'+q[0]+'" data-id="'+esc(id)+'"'+(own?' disabled':'')+' aria-pressed="'+on+'">'+q[1].replace('部門','')+'</button>'}).join('')+'</div></div>';
+      h+='<div class="b8p"><div class="b8pn"><span class="b8n">'+esc(p[0])+'番</span></div><div class="b8ch">'+B8Q.map(function(q){var on=!!b8.sel[q[0]][id];return '<button class="b8c'+(on?' on':'')+'" data-act="b8pick" data-c="'+q[0]+'" data-id="'+esc(id)+'"'+(own?' disabled':'')+' aria-pressed="'+on+'">'+q[1].replace('部門','')+'</button>'}).join('')+'</div></div>';
     });
     h+='</div>';
   });
   var tot=b8Count('o')+b8Count('d')+b8Count('k');
-  h+='<div class="b8bar"><span class="small">'+B8Q.map(function(q){return q[1].replace('部門','')+' <b>'+b8Count(q[0])+'</b>/'+q[2]}).join('　')+'</span><button class="btn" data-act="b8send"'+((!tot||b8.busy)?' disabled':'')+'>'+(b8.busy?'送信中…':(had?'選び直して送る':'この内容で送る'))+'</button></div></section>';
+  h+='<div class="b8bar"><span class="small">'+B8Q.map(function(q){return q[1].replace('部門','')+' <b>'+b8Count(q[0])+'</b>/'+q[2]}).join('　')+'</span><button class="btn" data-act="b8send"'+((!tot||b8.busy||had==='other')?' disabled':'')+'>'+(b8.busy?'送信中…':(had==='mine'?'選び直して送る':'この内容で送る'))+'</button></div></section>';
   return h;
 }
 function b8Admin(){
   if(!b8.adm){
     return '<section class="sec"><div class="card"><p class="small muted" style="margin:0 0 8px">登録・設定・集計・公開は、運営だけが使えます。運営用のPINを入力してください。</p><input id="b8-apin" type="password" inputmode="numeric" autocomplete="off" style="width:100%;font-size:20px;box-sizing:border-box"><div style="margin-top:10px"><button class="btn" data-act="b8admin"'+(b8.busy?' disabled':'')+'>運営として入る</button></div>'+(b8.msg?'<p class="note" style="margin-top:10px">'+esc(b8.msg)+'</p>':'')+'</div></section>';
   }
-  var h='<section class="sec"><h2>1. 選手名簿の登録</h2><p class="small muted">メンバー登録票を見ながら、チームごとに、1行に1人ずつ「背番号 氏名」の形で入れます（例：7 山田太郎）。コピーして貼り付けられます。保存すると、そのチームの名簿が置き換わります。</p><div class="card">';
+  var h='<section class="sec"><h2>1. 選手名簿の登録</h2><p class="small muted">メンバー登録票を見ながら、チームごとに、1行に1人ずつ「背番号 氏名」の形で入れます（例：7 山田太郎）。コピーして貼り付けられます。保存すると、そのチームの名簿が置き換わります。氏名は運営だけが見られます（指導者の画面には、背番号だけが表示されます）。</p><div class="card">';
   h+='<div class="fld"><span>チーム</span><select data-chg="b8rt" aria-label="登録するチーム">'+b8TeamOpts(b8.rt)+'</select></div>';
-  if(b8.rt)h+='<textarea id="b8-rost" rows="10" style="width:100%;box-sizing:border-box;font:inherit" placeholder="1 山田太郎&#10;2 佐藤花子">'+esc(b8Roster(b8.rt).map(function(p){return p[0]+' '+p[1]}).join('\n'))+'</textarea><div style="margin-top:8px"><button class="btn" data-act="b8rsave"'+(b8.busy?' disabled':'')+'>このチームの名簿を保存</button></div>';
+  if(b8.rt)h+='<textarea id="b8-rost" rows="10" style="width:100%;box-sizing:border-box;font:inherit" placeholder="1 山田太郎&#10;2 佐藤花子">'+esc(b8Names(b8.rt).map(function(p){return p[0]+' '+p[1]}).join('\n'))+'</textarea><div style="margin-top:8px"><button class="btn" data-act="b8rsave"'+(b8.busy?' disabled':'')+'>このチームの名簿を保存</button></div>';
   h+=(b8.msg?'<p class="note" style="margin-top:10px">'+esc(b8.msg)+'</p>':'')+'</div>';
   var reg=S.teams.filter(function(t){return b8Roster(t.id).length});
   h+='<p class="small muted" style="margin:10px 0 4px">登録済み '+reg.length+' / '+S.teams.length+'チーム</p><div class="small" style="line-height:1.8">'+S.teams.map(function(t){var n=b8Roster(t.id).length;return '<span class="b8t'+(n?' ok':'')+'">'+esc(t.id)+'：'+(n?n+'人':'未')+'</span>'}).join(' ')+'</div></section>';
   if(!b8.cdr){b8.cdr={};b8Targets().forEach(function(t){b8.cdr[t]=1})}
   var nd=Object.keys(b8.cdr).filter(function(k){return b8.cdr[k]}).length;
   h+='<section class="sec"><h2>2. 選考の対象チーム</h2><p class="small muted">準決勝が始まる前に、選考の対象にするチームを選びます。「表示する」を押すと、指導者の画面に、そのチームの選手だけが表示されます。</p><div class="card"><div class="small" style="line-height:2">'+S.teams.map(function(t){return '<label class="b8tk"><input type="checkbox" data-chg="b8cdr" data-id="'+t.id+'"'+(b8.cdr[t.id]?' checked':'')+'> '+esc(t.id)+'</label>'}).join(' ')+'</div><div class="kv" style="margin-top:10px"><button class="btn ghost sm" data-act="b8cfgsf">準決勝に進んだ4チームを選ぶ</button><button class="btn" data-act="b8cfgsave"'+((!nd||b8.busy)?' disabled':'')+'>表示する（'+nd+'チーム）</button><button class="btn warn sm" data-act="b8cfgoff">表示を止める</button></div><p class="small muted" style="margin:8px 0 0">いま指導者に表示中：'+(b8Targets().length?b8Targets().map(function(t){return esc(tn(t))}).join('、'):'なし')+'</p></div></section>';
-  var vt=Object.keys(b8.v).filter(function(k){return b8Ballot(k)});
+  var vt=Object.keys(b8.v).filter(function(k){return k.indexOf('u_')===0}).map(function(k){return k.slice(2)});
   h+='<section class="sec"><h2>3. 投票の状況</h2><p class="small muted">投票済み '+vt.length+' / '+S.teams.length+'チーム</p><div class="small" style="line-height:1.8">'+S.teams.map(function(t){var on=vt.indexOf(t.id)>=0;return '<span class="b8t'+(on?' ok':'')+'">'+esc(t.id)+(on?' 済':'')+'</span>'}).join(' ')+'</div></section>';
   var T8=b8Tally(),ids=JSON.stringify(B8Q.map(function(q){return T8.cats[q[0]].rows.map(function(r){return r.id+':'+r.c})}));
   if(b8.fin===null||(b8.finKey!==ids&&!b8.finTouched)){b8.fin=b8Defaults(T8);b8.finKey=ids}
@@ -791,22 +797,29 @@ async function pinOk(){
 }
 
 /* ---- ベスト8プレイヤー（別PIN・別の保存先 /b8/<PINから作る鍵>） ---- */
-async function b8Sha(p){
+async function b8Sha(p,sl){
   if(!(window.crypto&&crypto.subtle))throw {code:'crypto'};
-  var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('mmcup2026-b8:'+p));
+  var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode((sl||'mmcup2026-b8:')+p));
   return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('');
 }
-async function b8Patch(body){
+async function b8Patch(body,key){
   var t=String(Date.now()),o={pin:b8.pin+t,t:t};
   Object.keys(body||{}).forEach(function(k){o[k]=body[k]});
-  var r=await fetch(DB+'/b8/'+b8.key+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+  var r=await fetch(DB+'/b8/'+(key||b8.key)+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
   if(r.status===401||r.status===403)throw {code:'pin'};
   if(!r.ok)throw {code:'net'};
 }
 async function b8Load(){
   var rs=await Promise.all(['r','v','c'].map(function(k){return fetch(DB+'/b8/'+b8.key+'/'+k+'.json',{cache:'no-store'}).then(function(x){if(!x.ok)throw 0;return x.json()})}));
   b8.r=rs[0]||{};b8.v=rs[1]||{};
+  if(b8.adm){try{await b8LoadNames()}catch(e){}}
   try{b8.cfg=rs[2]?JSON.parse(rs[2]):null}catch(e){b8.cfg=null}
+}
+async function b8LoadNames(){
+  if(!(b8.adm&&ui.pin)){b8.nm={};return}
+  if(!b8.nkey)b8.nkey=await b8Sha(ui.pin,'mmcup2026-b8n:');
+  var x=await fetch(DB+'/b8/'+b8.nkey+'/r.json',{cache:'no-store'});
+  if(!x.ok)throw 0;b8.nm=(await x.json())||{};
 }
 async function b8Enter(auto){
   var el=document.getElementById('b8-pin'),p=auto&&typeof auto==='string'?auto:(el?String(el.value||'').trim():'');
@@ -814,7 +827,7 @@ async function b8Enter(auto){
   b8.busy=true;b8.msg='';b8.pin=p;render();
   try{
     b8.key=await b8Sha(p);await b8Patch({});await b8Load();
-    b8.ok=true;sset('mm_b8pin',p);b8.busy=false;b8InitSel();if(ui.pin)b8.adm=true;render();
+    b8.ok=true;sset('mm_b8pin',p);b8.busy=false;b8InitSel();if(ui.pin){b8.adm=true;try{await b8LoadNames()}catch(e){}}render();
   }catch(e){
     b8.ok=false;b8.busy=false;sset('mm_b8pin','');
     b8.msg=e&&e.code==='pin'?'PINが違います。':(e&&e.code==='crypto'?'この端末のブラウザでは使えません。別のブラウザでお試しください。':'通信できませんでした。もう一度お試しください。');
@@ -825,7 +838,7 @@ async function b8Admin2(){
   var el=document.getElementById('b8-apin'),p=el?String(el.value||'').trim():'';
   if(!p){b8.msg='PINを入力してください。';render();return}
   b8.busy=true;b8.msg='';render();
-  try{await verifyPin(p);ui.pin=p;lset('mm_pin',p);b8.adm=true;b8.busy=false;render()}
+  try{await verifyPin(p);ui.pin=p;lset('mm_pin',p);b8.adm=true;b8.nkey='';try{await b8LoadNames()}catch(e){}b8.busy=false;render()}
   catch(e){b8.busy=false;b8.msg=e&&e.code==='pin'?'運営PINが違います。':'通信できませんでした。もう一度お試しください。';render()}
 }
 async function b8Send(){
@@ -833,10 +846,13 @@ async function b8Send(){
   var ob={},tot=0;
   B8Q.forEach(function(q){var ids=Object.keys(b8.sel[q[0]]).filter(function(k){return b8.sel[q[0]][k]});ob[q[0]]=ids;tot+=ids.length;if(ids.length>q[2])ob.bad=1});
   if(!tot||ob.bad){toast('選ぶ人数を確かめてください。');return}
+  var had=b8Had(b8.team);
+  if(had==='other'){toast('このチームは、すでに送信済みです。');return}
   b8.busy=true;render();
   try{
-    var o={},val=JSON.stringify({o:ob.o,d:ob.d,k:ob.k,at:Date.now()});o['v/'+b8.team]=val;
-    await b8Patch(o);b8.v[b8.team]=val;b8.touched=false;b8.busy=false;toast('送信しました。ありがとうございました。');
+    var id=b8MyId(b8.team)||(Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10)),o={},val=JSON.stringify({o:ob.o,d:ob.d,k:ob.k});
+    o['v/b_'+id]=val;o['v/u_'+b8.team]='1';
+    await b8Patch(o);lset('mm_b8id_'+b8.team,id);b8.v['b_'+id]=val;b8.v['u_'+b8.team]='1';b8.touched=false;b8.busy=false;toast('送信しました。ありがとうございました。');
   }catch(e){b8.busy=false;toast(e&&e.code==='pin'?'PINが違うか、変更されました。開き直してください。':'送信できませんでした。通信を確認して、もう一度お試しください。')}
 }
 async function b8Cfg(on){
@@ -864,8 +880,11 @@ async function b8Rsave(){
   if(rows.length>30){b8.msg='登録できるのは、1チーム30人までです。';render();return}
   b8.busy=true;b8.msg='';render();
   try{
-    var o={},val=JSON.stringify(rows);o['r/'+tid]=val;
-    await b8Patch(o);b8.r[tid]=val;b8.busy=false;b8.msg=tn(tid)+'の名簿を保存しました（'+rows.length+'人）。';render();
+    if(!ui.pin)throw {code:'pin'};
+    if(!b8.nkey)b8.nkey=await b8Sha(ui.pin,'mmcup2026-b8n:');
+    var o={},on={},val=JSON.stringify(rows),nums=JSON.stringify(rows.map(function(p){return [p[0]]}));on['r/'+tid]=val;o['r/'+tid]=nums;
+    await b8Patch(on,b8.nkey);b8.nm=b8.nm||{};b8.nm[tid]=val;
+    await b8Patch(o);b8.r[tid]=nums;b8.busy=false;b8.msg=tn(tid)+'の名簿を保存しました（'+rows.length+'人）。';render();
   }catch(e){b8.busy=false;b8.msg=e&&e.code==='pin'?'PINが違うか、変更されました。開き直してください。':'保存できませんでした。もう一度お試しください。';render()}
 }
 async function b8Pub(){
