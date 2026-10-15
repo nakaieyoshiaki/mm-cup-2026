@@ -592,7 +592,7 @@ function updText(){
   try{return d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}
 }
 /* ---------- ベスト8プレイヤー選出（下部メニュー「ベスト8」） ---------- */
-var B8_NOSELF=true;
+var B8_NOSELF=false;
 var B8Q=[['o','オフェンス部門',3,'攻撃面において特に活躍した選手'],['d','ディフェンス部門',4,'守備において特に活躍した選手、攻守両面で活躍したユーティリティ選手'],['k','パスカット部門',1,'パスカットで特に活躍した選手']];
 var b8={nm:{},nkey:'',ok:false,pin:sget('mm_b8pin')||'',key:'',r:{},v:{},cfg:null,cdr:null,team:lget('mm_b8t')||'',sel:{o:{},d:{},k:{}},touched:false,busy:false,msg:'',view:'vote',rt:'',adm:false,fin:null,finKey:'',finTouched:false};
 function b8Roster(id){try{var a=JSON.parse(b8.r[id]||'[]');return Array.isArray(a)?a.map(function(p){return [p[0]]}):[]}catch(e){return[]}}
