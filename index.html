@@ -179,13 +179,14 @@ footer.f .btn{margin-top:8px}
 .pg.brk{width:420mm;height:296mm;padding:11mm;font-size:14.7pt}
 .pg.brk4{width:297mm;height:210mm;padding:0;display:block}
 .pg.brk4>.bki{width:420mm;height:296mm;padding:11mm;box-sizing:border-box;display:flex;flex-direction:column;transform:scale(.7071);transform-origin:0 0;font-size:14.7pt}
-.bkA{position:relative;width:398mm;height:252mm;margin-top:3mm}
-.bkA svg{position:absolute;left:0;top:0;width:398mm;height:252mm}
+.bkA{position:relative;width:398mm;height:246mm;margin-top:3mm}
+.bkA svg{position:absolute;left:0;top:0;width:398mm;height:246mm}
 .bk{position:absolute;box-sizing:border-box;border:.45mm solid #17694d;border-radius:1.5mm;background:#fff;display:flex;flex-direction:column;overflow:hidden}
 .bk .bhd{background:#17694d;color:#fff;font-size:9pt;padding:0 2mm;display:flex;justify-content:space-between;align-items:center;height:5.5mm;white-space:nowrap}
 .bk .tr{flex:1;display:flex;justify-content:space-between;align-items:center;gap:2mm;padding:0 2mm;font-size:12pt;border-top:.2mm solid #cfd8d3;white-space:nowrap;overflow:hidden}
 .bk .tr.w{background:#e3efe9;font-weight:700}.bk .sc{font-weight:700;min-width:7mm;text-align:right}
 .bkh{position:absolute;top:0;font-size:12pt;font-weight:700;color:#17694d;text-align:center;border-bottom:.5mm solid #17694d;height:6mm;box-sizing:border-box}
+.bk .rf{height:5mm;display:flex;align-items:center;gap:1.5mm;padding:0 2mm;font-size:8.5pt;border-top:.2mm solid #cfd8d3;background:#f3f6f4;white-space:nowrap;overflow:hidden}.bk .rf b{color:#17694d}
 .bkn{font-size:9.5pt;color:#555;margin-top:1mm}
 @media print{
  body.prt-on>*:not(#prt){display:none!important}
@@ -558,10 +559,10 @@ function brkBox(id,x,y,w,h){
   var m=M[id],r=res(m),has=(m.sets||[]).length>0;
   var court=m.stream==='CA'?'コートA':(m.stream==='CB'?'コートB':'');
   var rows=[0,1].map(function(i){var win=r.done&&r.win===i+1,sc=has?(i?r.w2:r.w1):'';return '<div class="tr'+(win?' w':'')+'"><span>'+nmS(m.t[i],13)+'</span><span class="sc">'+sc+'</span></div>'}).join('');
-  return '<div class="bk" style="left:'+x+'mm;top:'+y+'mm;width:'+w+'mm;height:'+h+'mm"><div class="bhd"><b>'+id+'</b><span>'+fm(m.s)+'　'+court+'</span></div>'+rows+'</div>';
+  return '<div class="bk" style="left:'+x+'mm;top:'+y+'mm;width:'+w+'mm;height:'+h+'mm"><div class="bhd"><b>'+id+'</b><span>'+fm(m.s)+'　'+court+'</span></div>'+rows+'<div class="rf"><b>審判</b> '+((m.jr||[]).length?m.jr.map(function(x){return nmH(x)}).join('・'):'運営')+'</div></div>';
 }
 function brkTree(xs,heads,first,tree,extra){
-  var W=80,H=25,pitch=first.pitch,y0=8,c={},svg='',h='',col={};
+  var W=80,H=27,pitch=first.pitch,y0=7,c={},svg='',h='',col={};
   first.ids.forEach(function(id,i){c[id]=y0+pitch*i+pitch/2;col[id]=0});
   tree.forEach(function(t){c[t[0]]=(c[t[1][0]]+c[t[1][1]])/2;col[t[0]]=t[2]});
   heads.forEach(function(t,i){h+='<div class="bkh" style="left:'+xs[i]+'mm;width:'+W+'mm">'+t+'</div>'});
@@ -569,7 +570,7 @@ function brkTree(xs,heads,first,tree,extra){
   tree.forEach(function(t){var px=xs[t[2]],xm=(xs[t[2]-1]+W+px)/2;
     t[1].forEach(function(k){svg+='M'+(xs[col[k]]+W)+' '+c[k]+'H'+xm+'V'+c[t[0]]});
     svg+='M'+xm+' '+c[t[0]]+'H'+px});
-  return '<div class="bkA"><svg viewBox="0 0 398 252"><path d="'+svg+'" fill="none" stroke="#17694d" stroke-width=".5"/></svg>'+h+(extra?extra(xs,W,H):'')+'</div>';
+  return '<div class="bkA"><svg viewBox="0 0 398 246"><path d="'+svg+'" fill="none" stroke="#17694d" stroke-width=".5"/></svg>'+h+(extra?extra(xs,W,H):'')+'</div>';
 }
 function brkPage(title,sub,body,note,k){
   var inner='<div class="pg-h"><b>MM CUP2026</b><span class="pg-t">'+esc(title)+'</span><span class="pg-s">'+esc(sub)+'</span><em>'+PRT_INFO[k].paper+'</em></div>'+body+'<div class="bkn">'+note+'</div>';
@@ -579,9 +580,9 @@ function bracketPrint(k){
   var d=S.days[1],sub=fmtDate(d.date)+' ・ '+d.venue;
   var ko=brkTree([0,106,212,318],['1回戦','準々決勝','準決勝','決勝'],{ids:['M1','M2','M3','M4','M5','M6','M7','M8'],pitch:29.5},
     [['QF1',['M1','M2'],1],['QF2',['M3','M4'],1],['QF3',['M5','M6'],1],['QF4',['M7','M8'],1],['SF1',['QF1','QF2'],2],['SF2',['QF3','QF4'],2],['F',['SF1','SF2'],3]],
-    function(xs,W,H){return '<div class="bkh" style="left:'+xs[3]+'mm;top:176mm;width:'+W+'mm">3位決定戦</div>'+brkBox('TP',xs[3],186,W,H)});
+    function(xs,W,H){return '<div class="bkh" style="left:'+xs[3]+'mm;top:170mm;width:'+W+'mm">3位決定戦</div>'+brkBox('TP',xs[3],180,W,H)});
   var fm_=brkTree([0,159,318],['1回戦','準決勝','決勝'],{ids:['FM1','FM2','FM3','FM4'],pitch:56},[['FSF1',['FM1','FM2'],1],['FSF2',['FM3','FM4'],1],['FF',['FSF1','FSF2'],2]]);
-  var note='時刻は予定です。進行状況により、前後することがあります。右側の数字は、取ったセット数です。';
+  var note='時刻は予定です。進行状況により、前後することがあります。審判は予定です。右側の数字は、取ったセット数です。';
   return brkPage('決勝トーナメント',sub,ko,note,k)+brkPage('フレンドリーマッチ',sub,fm_,note+' 決勝トーナメント1回戦で負けたチームが出ます。',k);
 }
 function prtZoom(){var el=document.getElementById('prt');if(!el)return;var i=PRT_INFO[PRT_MODE],z=Math.min(1,(el.clientWidth-16)/(i.w*3.7795));el.style.setProperty('--z',Math.max(.2,z).toFixed(3))}
