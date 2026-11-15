@@ -485,14 +485,7 @@ function bracketHtml(){
 }
 function adminHtml(){
   var h='<section class="sec"><h2>運営メニュー</h2><p class="note">変更はこの端末にためておき、「公開する」を押したときにまとめて全員の画面へ反映されます。別々の試合を複数の運営が入力しても、互いの入力は消えません。同じ試合を同時に入力した場合は、あとから公開した内容が残ります。</p></section>';
-  h+='<section class="sec"><h2>進行と、予定とのずれ</h2><p class="small muted">コートごとの「いまの試合」を進めます。結果を保存すると、そのコートは自動で次へ進みます。遅れと早まりは、結果を保存した時刻と予定の終了時刻との差から、自動で計算します。手で直したいときは、「遅れ」「早まり」と分数を入れると、そのコートの以降の時刻が変わります。</p>';
-  S.streams.forEach(function(s){
-    var n=nstream(s.id),cm=S.matches.filter(function(m){return m.stream===s.id&&m.ord===s.cur})[0],ed=sdel(s),dir=s.man?(s.dir||(s.delay<0?'early':'late')):(ed<0?'early':'late');
-    h+='<div class="card" style="margin-bottom:8px"><div class="kv"><b>'+esc(s.day===1?(s.id.length===1?s.id+'リーグ ':'')+s.name:'2日目 '+s.name)+'</b></div>'
-      +'<div class="fld"><span>いまの試合</span><span class="kv"><button class="btn sm ghost" data-act="cur" data-s="'+s.id+'" data-v="-1">戻す</button><span>'+(s.cur<0?'開始前':s.cur>=n?'終了':esc(cm.tag))+'</span><button class="btn sm" data-act="cur" data-s="'+s.id+'" data-v="1">次へ進める</button></span></div>'
-      +'<div class="fld"><span>予定とのずれ</span><span class="kv"><select id="dd-'+s.id+'" style="width:auto" data-chg="dir" data-s="'+s.id+'" aria-label="遅れか早まりか"><option value="late"'+(dir==='late'?' selected':'')+'>遅れ</option><option value="early"'+(dir==='early'?' selected':'')+'>早まり</option></select><input id="dl-'+s.id+'" type="number" min="0" max="180" style="width:6em" value="'+Math.abs(ed||0)+'" data-chg="delay" data-s="'+s.id+'" aria-label="ずれの分数"><span>分</span></span></div><p class="small muted" style="margin:4px 0 0">'+(s.man?'手で入れた値を使っています。<button class="btn sm ghost" data-act="auto" data-s="'+s.id+'">自動に戻す</button>':'結果の保存時刻から自動で計算しています（遅れも早まりも対象。3分未満の差は出しません）。')+'</p></div>';
-  });
-  h+='</section><section class="sec"><h2>チーム名</h2><p class="small muted">仮の名前で入っています。抽選会（11月22日）のあと、実際のチーム名に書き換えてください。</p>';
+  h+='<section class="sec"><h2>チーム名</h2><p class="small muted">仮の名前で入っています。抽選会（11月22日）のあと、実際のチーム名に書き換えてください。</p>';
   BL.forEach(function(b){
     h+='<div class="card" style="margin-bottom:10px"><h3>'+b+'リーグ</h3><div class="grid2">'+S.teams.filter(function(t){return t.block===b}).map(function(t){return '<label class="small muted">'+t.id+'<input type="text" style="width:100%" value="'+esc(t.name)+'" data-chg="tname" data-id="'+t.id+'" maxlength="24"></label>'}).join('')+'</div></div>';
   });
