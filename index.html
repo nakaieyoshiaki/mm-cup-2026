@@ -161,7 +161,7 @@ footer.f .btn{margin-top:8px}
 .pg.rec .xg .m{align-items:flex-start;justify-content:flex-start;text-align:left;font-size:.95em;color:#333;padding:.3em .4em}
 .pg.result .xg .rz{font-size:1.25em}.pg .xg .rz.w b{color:#17694d;font-size:1.5em}.pg .xg .rz.lo b{color:#555;font-size:1.5em}.pg .xg .rz .ps{display:block;white-space:nowrap;font-size:.8em;font-weight:400;color:#333;line-height:1.35}.pg .xg .rz .ps i{font-style:normal;display:block}.pg .xg .rz .sc{font-size:.9em;font-weight:700}.pg .xg .rz.pend{color:#b8bec2;font-size:.9em}
 .pg .xg .rk{font-size:1.5em;font-weight:900}.pg .xg .adv{background:#cfe8da}.pg .xg .wc{background:#fde1c8}.xg .hd.adv{background:#b9ddc9}.xg .hd.wc{background:#fbd0a8}
-.pg-b.many,.pg.rec .pg-b.many{grid-template-columns:50% 1fr}.sch.two{grid-template-columns:1fr 1fr;grid-auto-flow:column}.pg-b.many .pt{grid-template-columns:1fr 1fr 1fr}.pg-b.many .pt div{padding:.1em .3em}
+.pg-b.many,.pg.rec .pg-b.many{display:flex;flex-direction:column;gap:.2em}.pg-b.many .pg-l{flex:none}.pg-b.many .pg-r{flex:1}.pg-b.many .sch{flex:none;grid-auto-rows:auto}.pg-b.many .mt{line-height:1.3;padding:.15em .5em}.pg-b.many .mh{padding:.05em .5em}.pg-b.many .pt div{padding:.1em .4em}.pg.hand .pg-b.many .xg .m,.pg.poster .pg-b.many .xg .m{font-size:1.05em;line-height:1.3}.pg-b.many .xg .m small{font-size:.8em}
 .mh .rv{margin-left:auto;font-weight:700}.mt .wm{color:#17694d}
 .pg-f{font-size:.72em;color:#444;margin:.5em 0 0;line-height:1.4}
 .b8l{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
@@ -509,15 +509,15 @@ function prtPage(o){
   var ids=o.ids,ms=o.ms,mode=o.mode,rec=mode==='rec',rs=mode==='result',lb=o.lb,n=ids.length,RK={};
   (o.stand||[]).forEach(function(r,i){RK[r.id]={r:r,k:i+1}});
   var h='<section class="pg '+mode+'"><div class="pg-h"><b>MM CUP2026</b><span class="pg-t">'+esc(o.title)+'</span><span class="pg-s">'+esc(o.sub)+'</span>'+(rs?'<span class="pg-s">'+(o.done?'確定':'暫定')+'</span>':'')+'<em>'+PRT_INFO[mode].n+'</em></div><div class="pg-b'+(ms.length>6?' many':'')+'"><div class="pg-l">';
-  h+='<h3>参加チーム</h3><div class="pt">'+ids.map(function(x){var q=ref(x),nm=nmOf(x);return '<div><small>'+(q&&q!==nm?esc(q):'')+'</small><b>'+(q?esc(nm):'<span class="ph">'+esc(nm)+'</span>')+'</b></div>'}).join('')+'</div>';
-  h+='<h3>試合日程</h3><div class="sch'+(ms.length>6?' two':'')+'"'+(ms.length>6?' style="grid-template-rows:repeat('+Math.ceil(ms.length/2)+',minmax(min-content,1fr))"':'')+'>';
+  h+='<h3>参加チーム</h3><div class="pt"'+(ms.length>6?' style="grid-template-columns:repeat('+n+',1fr)"':'')+'>'+ids.map(function(x){var q=ref(x),nm=nmOf(x);return '<div><small>'+(q&&q!==nm?esc(q):'')+'</small><b>'+(q?esc(nm):'<span class="ph">'+esc(nm)+'</span>')+'</b></div>'}).join('')+'</div>';
+  h+='<h3>試合日程</h3><div class="sch"'+(ms.length>6?' style="grid-template-columns:repeat('+Math.ceil(ms.length/2)+',1fr)"':'')+'>';
   ms.forEach(function(m){
     var r=rs?res(m):null,w1=rs&&r.done&&r.win===1?'<b class="wm">○ </b>':'',w2=rs&&r.done&&r.win===2?'<b class="wm">○ </b>':'',rv=rs?'<span class="rv">'+(r.done?(lb?'終了':r.w1+' - '+r.w2):(status(m)==='live'?'試合中':'未実施'))+'</span>':'';
-    h+='<div class="mb"><div class="mh"><b>第'+(m.ord+1)+'試合</b><span>'+fm(m.s)+'</span>'+rv+'</div><div class="mt"><div style="'+vsz(m)+'">'+w1+nmH(m.t[0])+'<span class="vs">　vs　</span>'+w2+nmH(m.t[1])+'</div></div><div class="mr"><span class="rj">審判</span>'+((m.jr||[]).length?m.jr.map(function(x){return nmH(x)}).join('・'):'運営')+'</div></div>';
+    h+='<div class="mb"><div class="mh"><b>第'+(m.ord+1)+'試合</b><span>'+fm(m.s)+'</span>'+rv+'</div><div class="mt"><div style="'+(ms.length>6?'':vsz(m))+'">'+w1+nmH(m.t[0])+(ms.length>6?'<br><span class="vs">vs　</span>':'<span class="vs">　vs　</span>')+w2+nmH(m.t[1])+'</div></div><div class="mr"><span class="rj">審判</span>'+((m.jr||[]).length?m.jr.map(function(x){return nmH(x)}).join('・'):'運営')+'</div></div>';
   });
   h+='</div></div><div class="pg-r"><h3>対戦表</h3>';
   var st=(rec||rs)?['勝','負','勝点','得失','残存','順位']:['勝点','得失','残存','順位'];
-  h+='<div class="xg" style="grid-template-columns:'+(rec?'10.4em repeat('+n+',2.6fr) .6fr .6fr .9fr .9fr .9fr .9fr':'12.2em repeat('+n+',2fr) repeat('+st.length+',1fr)')+';grid-template-rows:auto repeat('+n+',1fr)"><div class="c hd"></div>'+ids.map(function(x,i){return '<div class="c hd cd"><div>'+esc(lb?CN[i]:x)+'<br><span class="hn">'+nmS(x,9)+'</span></div></div>'}).join('')+st.map(function(t){return '<div class="c hd">'+t+'</div>'}).join('');
+  h+='<div class="xg" style="grid-template-columns:'+(rec?'10.4em repeat('+n+','+(n>4?'2.2':'2.1')+'fr) repeat(2,.9fr) repeat(4,1fr)':'12.2em repeat('+n+',2fr) repeat('+st.length+',1fr)')+';grid-template-rows:auto repeat('+n+',1fr)"><div class="c hd"></div>'+ids.map(function(x,i){return '<div class="c hd cd"><div>'+esc(lb?CN[i]:x)+'<br><span class="hn">'+nmS(x,9)+'</span></div></div>'}).join('')+st.map(function(t){return '<div class="c hd">'+t+'</div>'}).join('');
   ids.forEach(function(a,ai){
     h+='<div class="c hd rl'+(rs&&RK[lb?ref(a):a]?(RK[lb?ref(a):a].k<=2?' adv':(!lb&&RK[lb?ref(a):a].k===3?' wc':'')):'')+'"><span class="cd">'+esc(lb?CN[ai]:a)+'</span>'+nmS(a,rec?8:10)+'</div>';
     ids.forEach(function(c){
